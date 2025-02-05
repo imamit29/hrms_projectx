@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:hrms_project/extras/Services.dart';
 import 'package:hrms_project/screens/bottombarPages/ExplorePage.dart';
 import 'package:hrms_project/screens/bottombarPages/HomePage.dart';
 import 'package:hrms_project/screens/bottombarPages/ProfilePage.dart';
@@ -55,7 +56,7 @@ class _NavigatorScreenState extends State<NavigatorScreen> {
               margin: EdgeInsets.all(20,),
               child: InkWell(
                 onTap: () {
-
+                  Services().logoutUser(context);
                 },
                 child: Icon(
                   Icons.logout,
