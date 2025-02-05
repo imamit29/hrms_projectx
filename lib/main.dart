@@ -1,0 +1,179 @@
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:hrms_project/extras/Constants.dart';
+import 'package:hrms_project/screens/LoginScreen.dart';
+import 'package:hrms_project/screens/NavigatorScreen.dart';
+import 'package:responsive_framework/responsive_framework.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+    statusBarIconBrightness: Brightness.light, // this will change the brightness of the icons
+    statusBarColor: const Color.fromRGBO(5, 42, 61, 1), // or any color you want
+  ));
+  final isLoggedIn = await checkLoginStatus();
+  runApp(MaterialApp(
+    debugShowCheckedModeBanner: false,
+    home: MyApp(isLoggedIn: isLoggedIn),
+    theme: ThemeData(
+      primaryColor: const Color.fromRGBO(5, 42, 61, 1), // Primary color
+      colorScheme: ColorScheme.fromSwatch().copyWith(
+        primary: const Color.fromRGBO(5, 42, 61, 1),
+        secondary: const Color.fromRGBO(4, 46, 62, 0.10), // Secondary color
+      ),
+    ),
+    builder: (context, child) => ResponsiveWrapper.builder(
+        BouncingScrollWrapper.builder(context, child!),
+        maxWidth: 1200,
+        minWidth: 450,
+        defaultScale: true,
+        breakpoints: [
+          const ResponsiveBreakpoint.resize(450, name: MOBILE),
+          const ResponsiveBreakpoint.autoScale(800, name: TABLET),
+          const ResponsiveBreakpoint.autoScale(1000, name: TABLET),
+          const ResponsiveBreakpoint.resize(1200, name: DESKTOP),
+          const ResponsiveBreakpoint.autoScale(2460, name: "4K"),
+        ],
+        background: Container(color: const Color(0xFFF5F5F5))
+    ),
+    routes: <String, WidgetBuilder>{
+      '/LoginScreen': (BuildContext context) => LoginScreen(),
+    },
+  ));
+}
+
+Future<bool> checkLoginStatus() async {
+  final prefs = await SharedPreferences.getInstance();
+  print("isloggedin : ${prefs.getBool('isloggedin')}");
+  return prefs.getBool('isloggedin') ?? false;
+}
+
+class MyApp extends StatelessWidget {
+  final bool isLoggedIn;
+
+  const MyApp({Key? key, required this.isLoggedIn}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: isLoggedIn ? NavigatorScreen() : WelcomeScreen(),
+    );
+  }
+}
+
+class WelcomeScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: SafeArea(
+          child: Column(
+            children: [
+              Expanded(
+                flex: 3,
+                child: Container(
+                  width: double.infinity,
+                  padding: EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    color: Color(0xFFF5E6D3),
+                    borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(40),
+                      bottomRight: Radius.circular(40),
+                    ),
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SizedBox(height: 70),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Image.asset(
+                            'assets/ic_launcher.png', // Replace with actual image asset
+                            width: 100,
+                            height: 100,
+                            //fit: BoxFit.contain,
+                          ),
+                          SizedBox(height: 10),
+                          Text(
+                            Constants.appName,
+                            style: TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black87,),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 20),
+                      Image.asset(
+                        'assets/hrms_illustration.gif', // Replace with actual image asset
+                        width: 200,
+                        height: 200,
+                        //fit: BoxFit.contain,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              Expanded(
+                flex: 2,
+                child: Container(
+                  padding: EdgeInsets.all(50),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text(
+                        'Welcome!',
+                        style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      SizedBox(height: 10),
+                      Text(
+                        'It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Colors.grey[700],
+                        ),
+                      ),
+                      SizedBox(height: 30),
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => LoginScreen()),
+                            );
+                          },
+                          style: ElevatedButton.styleFrom(
+
+                            padding: EdgeInsets.symmetric(vertical: 15),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(30),
+                            ),
+                            backgroundColor: Theme.of(context).colorScheme.primary,
+                          ),
+                          child: Text(
+                            'Sign In',
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          )),
+    );
+  }
+}
