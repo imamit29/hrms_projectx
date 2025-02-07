@@ -11,10 +11,9 @@ Future<void> main() async {
     statusBarIconBrightness: Brightness.dark, // this will change the brightness of the icons
     statusBarColor: Color.fromRGBO(5, 42, 61, 1), // or any color you want
   ));
-  final isLoggedIn = await checkLoginStatus();
   runApp(MaterialApp(
     debugShowCheckedModeBanner: false,
-    home: MyApp(isLoggedIn: isLoggedIn),
+    home: MyApp(),
     theme: ThemeData(
       primaryColor: const Color.fromRGBO(5, 42, 61, 1), // Primary color
       colorScheme: ColorScheme.fromSwatch().copyWith(
@@ -28,21 +27,47 @@ Future<void> main() async {
   ));
 }
 
-Future<bool> checkLoginStatus() async {
-  final prefs = await SharedPreferences.getInstance();
-  print("isloggedin : ${prefs.getBool('isloggedin')}");
-  return prefs.getBool('isloggedin') ?? false;
-}
+
 
 class MyApp extends StatelessWidget {
-  final bool isLoggedIn;
 
-  const MyApp({Key? key, required this.isLoggedIn}) : super(key: key);
+  const MyApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: isLoggedIn ? NavigatorScreen() : WelcomeScreen(),
+      body: InitScreen(),
+    );
+  }
+}
+
+class InitScreen extends StatefulWidget {
+  const InitScreen({Key? key}) : super(key: key);
+
+  @override
+  _InitScreenState createState() => _InitScreenState();
+}
+
+class _InitScreenState extends State<InitScreen> {
+
+  var isLoggedIn = false;
+
+  @override
+  initState() {
+    super.initState();
+   checkLoginStatus();
+  }
+
+  checkLoginStatus() async {
+    final prefs = await SharedPreferences.getInstance();
+    isLoggedIn =  prefs.getBool('isloggedin') ?? false;
+    print('isLoggedIn : $isLoggedIn');
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: isLoggedIn?NavigatorScreen():WelcomeScreen(),
     );
   }
 }
