@@ -88,12 +88,12 @@ class HolidayCard extends StatelessWidget {
                     color: Colors.black54,
                   ),
                 ),
-                Positioned(
-                  left: 0,
+                Container(
+                  height: 40,
+                  width: 40,
                   //top: -35,
                   child: Image.asset(
                     "assets/ic_flags.png",
-                    width: 50,
                   ),
                 ),
               ],
