@@ -40,6 +40,8 @@ dependencies:
   shared_preferences: ^2.5.1
   carousel_slider: ^5.0.0
   fluttertoast: ^8.2.11
+  flutter_charts: ^0.5.2
+  fl_chart: ^0.70.2
 
 dev_dependencies:
   flutter_test:
@@ -71,3 +73,5 @@ flutter:
     - assets/background.png
     - assets/homeheader.jpg
     - assets/userimg.png
+    - assets/ic_piggy_bank.png
+    - assets/ic_flags.png

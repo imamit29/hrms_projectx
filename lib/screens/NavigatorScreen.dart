@@ -35,9 +35,10 @@ class _NavigatorScreenState extends State<NavigatorScreen> {
         onWillPop: _onWillPop,
         child: Scaffold(
       appBar: AppBar(
-        title: Text('Welcome to EPAM HRMS'),
+        backgroundColor: Theme.of(context).colorScheme.primary,
+        title: Text('Welcome to EPAM HRMS', style: TextStyle(color: Colors.white, fontSize: 14),),
         leading:  Container(
-            margin: const EdgeInsets.only(left: 24.0),
+            margin: const EdgeInsets.only(left: 30.0),
             decoration: const BoxDecoration(
               color: Colors.white,
               shape: BoxShape.circle,

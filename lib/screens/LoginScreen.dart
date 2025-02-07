@@ -98,7 +98,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   const Padding(
                     padding:
-                    const EdgeInsets.only(bottom: 20, top: 20),
+                    const EdgeInsets.only(bottom: 30, top: 30),
                     child: const Text(
                         "Login With Username & Password",
                         style: TextStyle(
@@ -108,7 +108,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
 
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                    padding: const EdgeInsets.symmetric(horizontal: 40.0),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -117,9 +117,21 @@ class _LoginScreenState extends State<LoginScreen> {
                         TextFormField(
                           decoration: InputDecoration(
                             labelText: 'Username',
-                            border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(12),
-                                borderSide: BorderSide(color: Colors.indigo)
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Theme.of(context).colorScheme.primary, width: 1.0), // Inactive Border
+                              borderRadius: BorderRadius.circular(30),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Theme.of(context).colorScheme.primary, width: 2.0), // Active Border
+                              borderRadius: BorderRadius.circular(30),
+                            ),
+                            errorBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Theme.of(context).colorScheme.primary, width: 1.5), // Error Border
+                              borderRadius: BorderRadius.circular(30),
+                            ),
+                            focusedErrorBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Theme.of(context).colorScheme.primary, width: 2.0), // Focused Error Border
+                              borderRadius: BorderRadius.circular(30),
                             ),
                           ),
                           controller: _username,
@@ -138,9 +150,21 @@ class _LoginScreenState extends State<LoginScreen> {
                           obscureText: _showPassword,
                           decoration: InputDecoration(
                             labelText: 'Password',
-                            border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(12),
-                                borderSide: BorderSide(color: Colors.indigo)
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Theme.of(context).colorScheme.primary, width: 1.0), // Inactive Border
+                              borderRadius: BorderRadius.circular(30),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Theme.of(context).colorScheme.primary, width: 2.0), // Active Border
+                              borderRadius: BorderRadius.circular(30),
+                            ),
+                            errorBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Theme.of(context).colorScheme.primary, width: 1.5), // Error Border
+                              borderRadius: BorderRadius.circular(30),
+                            ),
+                            focusedErrorBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Theme.of(context).colorScheme.primary, width: 2.0), // Focused Error Border
+                              borderRadius: BorderRadius.circular(30),
                             ),
                             suffixIcon: GestureDetector(
                               onTap: () {
@@ -164,9 +188,21 @@ class _LoginScreenState extends State<LoginScreen> {
                           obscureText: true,
                           decoration: InputDecoration(
                             labelText: 'URL',
-                            border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(12),
-                                borderSide: BorderSide(color: Colors.indigo)
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Theme.of(context).colorScheme.primary, width: 1.0), // Inactive Border
+                              borderRadius: BorderRadius.circular(30),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Theme.of(context).colorScheme.primary, width: 2.0), // Active Border
+                              borderRadius: BorderRadius.circular(30),
+                            ),
+                            errorBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Theme.of(context).colorScheme.primary, width: 1.5), // Error Border
+                              borderRadius: BorderRadius.circular(30),
+                            ),
+                            focusedErrorBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Theme.of(context).colorScheme.primary, width: 2.0), // Focused Error Border
+                              borderRadius: BorderRadius.circular(30),
                             ),
                           ),
                         ),

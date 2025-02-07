@@ -8,8 +8,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-    statusBarIconBrightness: Brightness.light, // this will change the brightness of the icons
-    statusBarColor: const Color.fromRGBO(5, 42, 61, 1), // or any color you want
+    statusBarIconBrightness: Brightness.dark, // this will change the brightness of the icons
+    statusBarColor: Color.fromRGBO(5, 42, 61, 1), // or any color you want
   ));
   final isLoggedIn = await checkLoginStatus();
   runApp(MaterialApp(
