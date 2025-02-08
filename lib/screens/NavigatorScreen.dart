@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hrms_project/extras/Services.dart';
-import 'package:hrms_project/screens/bottombarPages/ExplorePage.dart';
+import 'package:hrms_project/screens/bottombarPages/ActionPage.dart';
 import 'package:hrms_project/screens/bottombarPages/HomePage.dart';
 import 'package:hrms_project/screens/bottombarPages/ProfilePage.dart';
 
@@ -18,8 +18,8 @@ class _NavigatorScreenState extends State<NavigatorScreen> {
 
   static const List<Widget> _pages = <Widget>[
     HomePage(),
+    ActionPage(),
     ProfilePage(),
-    ExplorePage(),
   ];
 
   void _onItemTapped(int index) {
@@ -69,8 +69,19 @@ class _NavigatorScreenState extends State<NavigatorScreen> {
 
           ]
       ),
-      backgroundColor: Colors.white,
-      body: _pages[_selectedIndex],
+      body: SafeArea(child: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: const AssetImage("assets/background.png"),
+            fit: BoxFit.cover,
+            colorFilter: ColorFilter.mode(
+                Colors.black.withOpacity(0.10), BlendMode.dstATop),
+          ),
+        ),
+        height: double.infinity,
+        width: double.infinity,
+        child:  _pages[_selectedIndex],
+      )),
         bottomNavigationBar: BottomNavigationBar(
           items: const <BottomNavigationBarItem>[
             BottomNavigationBarItem(
@@ -78,18 +89,33 @@ class _NavigatorScreenState extends State<NavigatorScreen> {
               label: 'Home',
             ),
             BottomNavigationBarItem(
+                icon: Icon(Icons.circle, color: Colors.transparent),
+                label: ''), // Dummy for FAB
+            BottomNavigationBarItem(
               icon: Icon(Icons.person),
               label: 'Profile',
             ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.explore),
-              label: 'Explore',
-            ),
           ],
-          currentIndex: _selectedIndex,
+          currentIndex: _selectedIndex > 1 ? 1 : _selectedIndex,
+          onTap: (index) {
+            if (index == 1) return; // Prevents tab change when FAB is clicked
+            _onItemTapped(index);
+          },
           selectedItemColor: Colors.blue,
-          onTap: _onItemTapped,
+
         ),
+          floatingActionButton: FloatingActionButton(
+            shape: const CircleBorder(),
+            onPressed: () {
+              setState(() {
+                _selectedIndex = 1; // Navigate to action screen
+              });
+            },
+            child: Icon(Icons.add),
+            backgroundColor: Colors.blue,
+            elevation: 4,
+          ),
+          floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     ));
   }
 
