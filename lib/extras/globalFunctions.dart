@@ -11,6 +11,16 @@ openPageNoBack(context, screenName) {
   );
 }
 
+openPage(context, screenName) {
+  Navigator.pushAndRemoveUntil<dynamic>(
+    context,
+    MaterialPageRoute<dynamic>(
+      builder: (BuildContext context) => screenName,
+    ),
+        (route) => true, //if you want to disable back feature set to false
+  );
+}
+
 showError(var msg , context) {
   Fluttertoast.showToast(
       msg: "$msg",

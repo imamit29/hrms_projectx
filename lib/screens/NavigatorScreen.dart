@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:hrms_project/extras/Services.dart';
 import 'package:hrms_project/screens/bottombarPages/ActionPage.dart';
 import 'package:hrms_project/screens/bottombarPages/HomePage.dart';
@@ -31,8 +32,18 @@ class _NavigatorScreenState extends State<NavigatorScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-        onWillPop: _onWillPop,
+    return PopScope(
+        canPop: false,
+        onPopInvoked: (didPop) async {
+          debugPrint("didPop1: $didPop");
+          if (didPop) {
+            return;
+          }
+          final bool shouldPop = await _onWillPop();
+          if (shouldPop) {
+            SystemNavigator.pop();
+          }
+        },
         child: Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.primary,
@@ -119,7 +130,7 @@ class _NavigatorScreenState extends State<NavigatorScreen> {
     ));
   }
 
-  Future<bool> _onWillPop() async {
+  _onWillPop() async {
     return (await showDialog(
       context: context,
       builder: (context) => AlertDialog(

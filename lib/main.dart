@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hrms_project/extras/Constants.dart';
+import 'package:hrms_project/extras/globalFunctions.dart';
 import 'package:hrms_project/screens/LoginScreen.dart';
 import 'package:hrms_project/screens/NavigatorScreen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -56,18 +57,26 @@ class _InitScreenState extends State<InitScreen> {
   initState() {
     super.initState();
    checkLoginStatus();
+
   }
 
   checkLoginStatus() async {
     final prefs = await SharedPreferences.getInstance();
     isLoggedIn =  prefs.getBool('isloggedin') ?? false;
     print('isLoggedIn : $isLoggedIn');
+    openPageNoBack(context, isLoggedIn?NavigatorScreen():WelcomeScreen());
+
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: isLoggedIn?NavigatorScreen():WelcomeScreen(),
+    return Center(
+      child: Image.asset(
+        'assets/ic_launcher.png', // Replace with actual image asset
+        width: 150,
+        height: 150,
+        //fit: BoxFit.contain,
+      ),
     );
   }
 }
