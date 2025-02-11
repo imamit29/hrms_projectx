@@ -1,5 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:hrms_project/extras/globalFunctions.dart';
+import 'package:hrms_project/screens/ApplyRegurlarizationScreen.dart';
+import 'package:hrms_project/screens/ExpenseScreen.dart';
+import 'package:hrms_project/screens/PaySlipScreen.dart';
 
 class ActionPage extends StatefulWidget {
   const ActionPage({Key? key}) : super(key: key);
@@ -16,6 +20,7 @@ class _ActionPageState extends State<ActionPage> {
     {'icon': Icons.groups, 'title': 'Who Is In', 'color': Colors.blue[100]},
     {'icon': Icons.swap_horiz, 'title': 'Employee Swipes', 'color': Colors.blue[100]},
     {'icon': Icons.local_cafe, 'title': 'Apply Leave', 'color': Colors.cyan[100]},
+    {'icon': Icons.currency_rupee, 'title': 'My Expanse', 'color': Colors.cyan[100]},
     {'icon': Icons.view_module, 'title': 'Leave Balance', 'color': Colors.cyan[100]},
     {'icon': Icons.calendar_today, 'title': 'Holiday Calendar', 'color': Colors.cyan[100]},
     {'icon': Icons.receipt, 'title': 'Payslips', 'color': Colors.orange[100]},
@@ -51,7 +56,15 @@ class _ActionPageState extends State<ActionPage> {
                         actions[index]['title'],
                         style: TextStyle(fontWeight: FontWeight.w500),
                       ),
-                      onTap: () {},
+                      onTap: () {
+                        if(actions[index]['title'] == 'Payslips'){
+                          openPage(context, PayslipScreen());
+                        }else if(actions[index]['title'] == 'Apply Regularization'){
+                          openPage(context, ApplyRegularizationScreen());
+                        }else if(actions[index]['title'] == 'My Expanse'){
+                          openPage(context, ExpanseScreen());
+                        }
+                      },
                     ),
                   );
                 },
