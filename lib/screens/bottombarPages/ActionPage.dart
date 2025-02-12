@@ -2,7 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hrms_project/extras/globalFunctions.dart';
 import 'package:hrms_project/screens/ApplyRegurlarizationScreen.dart';
+import 'package:hrms_project/screens/AttendanceScreen.dart';
 import 'package:hrms_project/screens/ExpenseScreen.dart';
+import 'package:hrms_project/screens/LeaveRequestScreen.dart';
 import 'package:hrms_project/screens/PaySlipScreen.dart';
 
 class ActionPage extends StatefulWidget {
@@ -63,6 +65,10 @@ class _ActionPageState extends State<ActionPage> {
                           openPage(context, ApplyRegularizationScreen());
                         }else if(actions[index]['title'] == 'My Expanse'){
                           openPage(context, ExpanseScreen());
+                        }else if(actions[index]['title'] == 'Apply Leave'){
+                          openPage(context, LeaveRequestScreen());
+                        }else if(actions[index]['title'] == 'Attendance Info'){
+                          openPage(context, AttendanceScreen(title: 'Attendance Info',));
                         }
                       },
                     ),

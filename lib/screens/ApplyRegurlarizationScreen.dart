@@ -252,11 +252,6 @@ class _ApplyRegularizationScreenState extends State<ApplyRegularizationScreen> {
                 ],
               ),
               SizedBox(height: 10),
-              Text(
-                'Enter Comment',
-                style: TextStyle(fontWeight: FontWeight.w500),
-              ),
-              SizedBox(height: 10),
               Container(
                 margin: EdgeInsets.all(5),
                 child: TextField(
