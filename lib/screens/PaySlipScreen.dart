@@ -1,7 +1,17 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class PayslipScreen extends StatelessWidget {
+class PayslipScreen extends StatefulWidget {
+  @override
+  _PayslipScreenState createState() => _PayslipScreenState();
+}
+
+class _PayslipScreenState extends State<PayslipScreen> {
+
+  String selectedValue = 'Select Month'; // Initial selected value
+
+  List<String> items = ['Select Month', 'Apr 2024', 'May 2024', 'Jun 2024', 'Jul 2024', 'Aug 2024', 'Sep 2024', 'Oct 2024', 'Nov 2024', 'Dec 2024', 'Jan 2025', 'Feb 2025', 'Mar 2025'];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,22 +40,28 @@ class PayslipScreen extends StatelessWidget {
               Align(
                 alignment: Alignment.topRight,
                 child: DropdownButton<String>(
-                  value: 'Dec 2024',
-                  items: ['Dec 2024', 'Nov 2024', 'Oct 2024']
-                      .map((month) => DropdownMenuItem(
-                    value: month,
-                    child: Text(month),
-                  ))
-                      .toList(),
-                  onChanged: (value) {},
+                  value: selectedValue,
+                  icon: Icon(Icons.arrow_drop_down),
+                  style: TextStyle(fontSize: 18, color: Colors.black),
+                  onChanged: (String? newValue) {
+                    setState(() {
+                      selectedValue = newValue!;
+                    });
+                  },
+                  items: items.map<DropdownMenuItem<String>>((String item) {
+                    return DropdownMenuItem<String>(
+                      value: item,
+                      child: Text(item),
+                    );
+                  }).toList(),
                 ),
               ),
               SizedBox(height: 16),
               PayslipCard(title: 'Payslip', amount: '₹80,000.00'),
-              SizedBox(height: 16),
-              PayslipCard(title: 'Reimbursement Payslip', amount: '₹80,000.00'),
-              SizedBox(height: 16),
-              PayslipCard(title: 'CTC Payslip', amount: '₹12,40,000.00'),
+              // SizedBox(height: 16),
+              // PayslipCard(title: 'Reimbursement Payslip', amount: '₹80,000.00'),
+              // SizedBox(height: 16),
+              // PayslipCard(title: 'CTC Payslip', amount: '₹12,40,000.00'),
             ],
           ),
         ),
@@ -96,7 +112,7 @@ class PayslipCard extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                ElevatedButton(onPressed: () {}, child: Text('View More', style: TextStyle(color: Theme.of(context).colorScheme.primary),),
+                ElevatedButton(onPressed: () {}, child: Text('View', style: TextStyle(color: Theme.of(context).colorScheme.primary),),
                   style: ElevatedButton.styleFrom(
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(30),

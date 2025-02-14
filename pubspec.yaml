@@ -46,6 +46,7 @@ dependencies:
   syncfusion_flutter_core: ^20.4.41
   syncfusion_flutter_gauges: ^20.3.59
   syncfusion_flutter_charts: ^20.3.58
+  table_calendar: ^3.1.1
 
 dev_dependencies:
   flutter_test:

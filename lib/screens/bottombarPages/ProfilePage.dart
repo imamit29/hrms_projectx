@@ -33,16 +33,16 @@ class _ProfilePageState extends State<ProfilePage> {
               style: TextStyle(fontSize: 16, color: Colors.grey[600]),
             ),
             SizedBox(height: 10),
-            ElevatedButton.icon(
-              onPressed: () {},
-              icon: Icon(Icons.edit, size: 16, color: Colors.white,),
-              label: Text('Edit Profile'),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blue,
-                foregroundColor: Colors.white,
-              ),
-            ),
-            SizedBox(height: 20),
+            // ElevatedButton.icon(
+            //   onPressed: () {},
+            //   icon: Icon(Icons.edit, size: 16, color: Colors.white,),
+            //   label: Text('Edit Profile'),
+            //   style: ElevatedButton.styleFrom(
+            //     backgroundColor: Colors.blue,
+            //     foregroundColor: Colors.white,
+            //   ),
+            // ),
+            // SizedBox(height: 20),
             _buildInfoCard('Personal Information', [
               Divider(height: 1, color: Colors.black, thickness: 0.1,),
               Divider(height: 5,),
