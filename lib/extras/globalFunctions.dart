@@ -32,3 +32,23 @@ showError(var msg , context) {
       fontSize: 16.0);
 }
 
+
+showLoaderDialog(BuildContext context, msg) {
+  var alert = AlertDialog(
+    content: Row(
+      children: [
+        const CircularProgressIndicator(),
+        Container(
+            margin: const EdgeInsets.only(left: 7),
+            child: Text('$msg...')),
+      ],
+    ),
+  );
+  showDialog(
+    barrierDismissible: false,
+    context: context,
+    builder: (BuildContext context) {
+      return alert;
+    },
+  );
+}

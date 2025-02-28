@@ -47,6 +47,9 @@ dependencies:
   syncfusion_flutter_gauges: ^20.3.59
   syncfusion_flutter_charts: ^20.3.58
   table_calendar: ^3.1.1
+  unique_identifier: ^0.4.0
+  rflutter_alert: ^2.0.7
+  provider: ^6.1.2
 
 dev_dependencies:
   flutter_test:

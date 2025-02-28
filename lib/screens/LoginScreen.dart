@@ -1,9 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:hrms_project/extras/Constants.dart';
 import 'package:hrms_project/extras/globalFunctions.dart';
+import 'package:hrms_project/network/apiservices.dart';
+import 'package:hrms_project/network/models/login_Model.dart';
 import 'package:hrms_project/screens/NavigatorScreen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:unique_identifier/unique_identifier.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -16,10 +20,15 @@ class _LoginScreenState extends State<LoginScreen> {
 
   bool _showPassword = false;
   bool _value = false;
+  var device_id ='asfgthyjtytfeawesrdgfh1234';
   TextEditingController _username = TextEditingController();
   TextEditingController _password = TextEditingController();
-  TextEditingController _url = TextEditingController();
-  final _formKey = GlobalKey<FormState>();
+
+  @override
+  void initState() {
+    initUniqueIdentifierState();
+    super.initState();
+  }
 
 
   @override
@@ -182,31 +191,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
                         ),
                         const SizedBox(height: 16),
-                        // Password Field
-                        TextFormField(
-                          controller: _url,
-                          obscureText: true,
-                          decoration: InputDecoration(
-                            labelText: 'URL',
-                            enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: Theme.of(context).colorScheme.primary, width: 1.0), // Inactive Border
-                              borderRadius: BorderRadius.circular(30),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: Theme.of(context).colorScheme.primary, width: 2.0), // Active Border
-                              borderRadius: BorderRadius.circular(30),
-                            ),
-                            errorBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: Theme.of(context).colorScheme.primary, width: 1.5), // Error Border
-                              borderRadius: BorderRadius.circular(30),
-                            ),
-                            focusedErrorBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: Theme.of(context).colorScheme.primary, width: 2.0), // Focused Error Border
-                              borderRadius: BorderRadius.circular(30),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 10),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
@@ -232,18 +216,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                   showError('Please enter a valid username', context);
                                 }else if(_username.text.isEmpty){
                                   showError('Please enter a valid password', context);
-                                }else if(_username.text.isEmpty){
-                                  showError('Please enter a valid URL', context);
                                 }else{
-
-                                if(_value){
-                                  var prefs = await SharedPreferences.getInstance();
-                                  prefs.setBool('isloggedin', true);
-                                  prefs.setString("username",_username.text);
-                                }
-                                openPageNoBack(context, NavigatorScreen());
-
-
+                                _getLogin();
                               }
 
                             },
@@ -281,5 +255,37 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
           )),
     );
+  }
+
+  Future<void> initUniqueIdentifierState() async {
+    String identifier;
+    try {
+      identifier = (await UniqueIdentifier.serial)!;
+    } on PlatformException {
+      identifier = 'Failed to get Unique Identifier';
+    }
+
+    if (!mounted) return;
+
+    setState(() {
+      device_id = identifier;
+    });
+  }
+
+  LoginModel? _userModel;
+
+  void _getLogin() async {
+    showLoaderDialog(context, 'Validating Credentials');
+    var prefs = await SharedPreferences.getInstance();
+    _userModel = (await ApiService().userLogin(_username.text, _password.text, device_id));
+    Navigator.pop(context);
+    if(_userModel?.result?.status == 'Login Sucessfull'){
+      prefs.setBool('isloggedin', true);
+      prefs.setInt("userid",_userModel!.result!.userId!.toInt());
+      print(prefs.get('userid'));
+      openPageNoBack(context, NavigatorScreen());
+    }else{
+      showError(_userModel?.result?.status, context);
+    }
   }
 }

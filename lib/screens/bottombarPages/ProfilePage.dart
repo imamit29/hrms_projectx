@@ -1,5 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:hrms_project/extras/globalFunctions.dart';
+import 'package:hrms_project/network/apiservices.dart';
+import 'package:hrms_project/network/models/profile_Model.dart';
+import 'package:hrms_project/provider/UserProvider.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({Key? key}) : super(key: key);
@@ -11,7 +17,13 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
 
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final apiResponse = Provider.of<UserProvider>(context).profileData;
     return SingleChildScrollView(
       child: Container(
         margin: EdgeInsets.all(20),
@@ -25,13 +37,13 @@ class _ProfilePageState extends State<ProfilePage> {
             ),
             SizedBox(height: 10),
             Text(
-              'Samuel Alex',
+              apiResponse.result!.data!.personalInformation!.firstName!,
               style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
             ),
-            Text(
-              'Team Manager',
-              style: TextStyle(fontSize: 16, color: Colors.grey[600]),
-            ),
+            // Text(
+            //   'Team Manager',
+            //   style: TextStyle(fontSize: 16, color: Colors.grey[600]),
+            // ),
             SizedBox(height: 10),
             // ElevatedButton.icon(
             //   onPressed: () {},
@@ -46,35 +58,34 @@ class _ProfilePageState extends State<ProfilePage> {
             _buildInfoCard('Personal Information', [
               Divider(height: 1, color: Colors.black, thickness: 0.1,),
               Divider(height: 5,),
-              _buildInfoRow('First Name', 'Samuel'),
-              _buildInfoRow('Last Name', 'Alex'),
-              _buildInfoRow('Employee Code', 'HRSAM123'),
-              _buildInfoRow('Date Of Birth', '12-10-1998'),
-              _buildInfoRow('Gender', 'Male'),
-              _buildInfoRow('Blood Group', 'B+'),
+              _buildInfoRow('Name', apiResponse.result!.data!.personalInformation!.firstName!),
+              _buildInfoRow('Employee Code', apiResponse.result!.data!.personalInformation!.empCode!),
+              apiResponse.result!.data!.personalInformation!.dob!?_buildInfoRow('Date Of Birth', '12-10-1998'):Container(),
+              _buildInfoRow('Gender', apiResponse.result!.data!.personalInformation!.gender!),
+              _buildInfoRow('Blood Group', apiResponse.result!.data!.personalInformation!.bloodGroup!),
             ]),
             SizedBox(height: 10),
             _buildInfoCard('Employment Status & Type', [
               Divider(height: 1, color: Colors.black, thickness: 0.1,),
               Divider(height: 5,),
-              _buildInfoRow('Date Of Joining', '15-10-2022'),
-              _buildInfoRow('Date Of Retirement', '15-10-2060'),
-              _buildInfoRow('Employement Type', 'Permanent'),
-              _buildInfoRow('Employement Status', 'Confirmed'),
-              _buildInfoRow('Date Of Confirmation', '15-10-2022'),
-              _buildInfoRow('Employment Status', 'Active', isActive: true),
+              _buildInfoRow('Date Of Joining', apiResponse.result!.data!.employementStatus!.joiningDate!),
+              //_buildInfoRow('Date Of Retirement', '15-10-2060'),
+              _buildInfoRow('Employee Type', apiResponse.result!.data!.employementStatus!.empType!),
+              //_buildInfoRow('Employement Status', 'Confirmed'),
+              _buildInfoRow('Date Of Confirmation', apiResponse.result!.data!.employementStatus!.dateOfConfirmation!),
+              _buildInfoRow('Employment Status', apiResponse.result!.data!.employementStatus!.empStatus!, isActive: true),
             ]),
             SizedBox(height: 10),
             _buildInfoCard('Position Details', [
               Divider(height: 1, color: Colors.black, thickness: 0.1,),
               Divider(height: 5,),
-              _buildInfoRow('Company Name', 'SRS Tech'),
-              _buildInfoRow('Department', 'Software'),
-              _buildInfoRow('Branch', 'Gurugram(A)'),
-              _buildInfoRow('Designation', 'Developer'),
-              _buildInfoRow('Grade', 'A1'),
-              _buildInfoRow('Reporting Manager', 'Rohan Singh'),
-              _buildInfoRow('functional manager', 'Prem D'),
+              _buildInfoRow('Company Name', apiResponse.result!.data!.positionDetails!.companyName!),
+              _buildInfoRow('Department', apiResponse.result!.data!.positionDetails!.department!),
+              apiResponse.result!.data!.positionDetails!.branch!?_buildInfoRow('Branch', 'Gurugram(A)'):Container(),
+              _buildInfoRow('Designation', apiResponse.result!.data!.positionDetails!.designation!),
+              _buildInfoRow('Grade', apiResponse.result!.data!.positionDetails!.grade!),
+              _buildInfoRow('Reporting Manager', apiResponse.result!.data!.positionDetails!.rM!),
+              _buildInfoRow('functional manager', apiResponse.result!.data!.positionDetails!.fM!),
 
             ]),
           ],

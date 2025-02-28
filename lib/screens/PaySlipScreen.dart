@@ -112,13 +112,13 @@ class PayslipCard extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                ElevatedButton(onPressed: () {}, child: Text('View', style: TextStyle(color: Theme.of(context).colorScheme.primary),),
-                  style: ElevatedButton.styleFrom(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30),
-                    ),
-                  ),),
-                SizedBox(width: 8),
+                // ElevatedButton(onPressed: () {}, child: Text('View', style: TextStyle(color: Theme.of(context).colorScheme.primary),),
+                //   style: ElevatedButton.styleFrom(
+                //     shape: RoundedRectangleBorder(
+                //       borderRadius: BorderRadius.circular(30),
+                //     ),
+                //   ),),
+                // SizedBox(width: 8),
                 ElevatedButton(onPressed: () {}, child: Text('Download',style: TextStyle(color: Colors.white)),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Theme.of(context).colorScheme.primary,

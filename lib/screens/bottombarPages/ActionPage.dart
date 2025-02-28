@@ -5,6 +5,7 @@ import 'package:hrms_project/screens/ApplyRegurlarizationScreen.dart';
 import 'package:hrms_project/screens/AttendanceScreen.dart';
 import 'package:hrms_project/screens/CalendarScreen.dart';
 import 'package:hrms_project/screens/ExpenseScreen.dart';
+import 'package:hrms_project/screens/LeaveBalanceScreen.dart';
 import 'package:hrms_project/screens/LeaveRequestScreen.dart';
 import 'package:hrms_project/screens/PaySlipScreen.dart';
 
@@ -69,7 +70,9 @@ class _ActionPageState extends State<ActionPage> {
                         }else if(actions[index]['title'] == 'Attendance Info'){
                           openPage(context, AttendanceScreen());
                         }else if(actions[index]['title'] == 'Holiday Calendar'){
-                          openPage(context, HolidayCalendar(title: 'Holiday Calendar',));
+                          openPage(context, CalendarScreen());
+                        }else if(actions[index]['title'] == 'Leave Balance'){
+                          openPage(context, LeaveBalanceScreen());
                         }
                       },
                     ),

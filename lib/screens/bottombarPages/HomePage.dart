@@ -1,8 +1,12 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:hrms_project/provider/UserProvider.dart';
 import 'package:hrms_project/screens/bottombarPages/homeSections/AttendanceCard.dart';
 import 'package:hrms_project/screens/bottombarPages/homeSections/HolidayCard.dart';
 import 'package:hrms_project/screens/bottombarPages/homeSections/PayslipCard.dart';
+import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -14,7 +18,13 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
 
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final apiResponse = Provider.of<UserProvider>(context).profileData;
     return SingleChildScrollView(
       child: Column(
         children: [
@@ -32,7 +42,7 @@ class _HomePageState extends State<HomePage> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'Hello Samuel 👋',
+                              '${apiResponse.result?.data?.personalInformation?.firstName} 👋',
                               style: TextStyle(
                                 fontSize: 24,
                                 fontWeight: FontWeight.bold,
@@ -200,4 +210,6 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
+
+
 }

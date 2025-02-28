@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:hrms_project/extras/Constants.dart';
 import 'package:hrms_project/extras/Services.dart';
 import 'package:hrms_project/screens/bottombarPages/ActionPage.dart';
 import 'package:hrms_project/screens/bottombarPages/HomePage.dart';
@@ -47,7 +48,7 @@ class _NavigatorScreenState extends State<NavigatorScreen> {
         child: Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.primary,
-        title: Text('Welcome to EPAM HRMS', style: TextStyle(color: Colors.white, fontSize: 14),),
+        title: Text(Constants.appName, style: TextStyle(color: Colors.white, fontSize: 14),),
         leading:  Container(
             margin: const EdgeInsets.only(left: 30.0),
             decoration: const BoxDecoration(
@@ -127,7 +128,7 @@ class _NavigatorScreenState extends State<NavigatorScreen> {
             elevation: 4,
           ),
           floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-    ));
+        ));
   }
 
   _onWillPop() async {

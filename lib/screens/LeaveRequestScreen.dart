@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:hrms_project/extras/globalFunctions.dart';
+import 'package:hrms_project/network/apiservices.dart';
+import 'package:hrms_project/network/models/leaveType_Model.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 
 class LeaveRequestScreen extends StatefulWidget {
@@ -9,7 +13,14 @@ class LeaveRequestScreen extends StatefulWidget {
 class _LeaveRequestScreenState extends State<LeaveRequestScreen> {
   String leaveType = "";
   String selectedDay = "Full Day";
+  List<String> leaveTypes = [];
   TextEditingController commentsController = TextEditingController();
+
+  @override
+  void initState() {
+    _getLeaveType();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -152,8 +163,8 @@ class _LeaveRequestScreenState extends State<LeaveRequestScreen> {
                       borderSide: BorderSide(color: Theme.of(context).colorScheme.primary, width: 2.0), // Focused Error Border
                       borderRadius: BorderRadius.circular(10),
                     )),
-                items: ["Privilege Leave", "Casual Leave/Sick Leave", "Compensatory Off"]
-                    .map((String value) => DropdownMenuItem<String>(
+                items:
+                leaveTypes.map((String value) => DropdownMenuItem<String>(
                   value: value,
                   child: Text(value),
                 ))
@@ -204,5 +215,17 @@ class _LeaveRequestScreenState extends State<LeaveRequestScreen> {
         ),
       ),
     );
+  }
+
+  LeaveTypeModel? _leaveTypeModel;
+
+  void _getLeaveType() async {
+    var prefs = await SharedPreferences.getInstance();
+    _leaveTypeModel = (await ApiService().leaveType(prefs.get('userid')));
+    setState(() {
+      leaveTypes = _leaveTypeModel!.leaveData!;
+
+    });
+
   }
 }
