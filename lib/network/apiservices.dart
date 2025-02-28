@@ -27,6 +27,10 @@ class ApiService {
         body: jsonEncode(payload),
       );
 
+      print(response.request);
+      print(payload);
+      print(response.body);
+
       if (response.statusCode == 200) {
         LoginModel model = loginModelFromJson(response.body);
         return model;
