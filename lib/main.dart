@@ -2,12 +2,11 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:hrms_project/extras/Constants.dart';
 import 'package:hrms_project/extras/globalFunctions.dart';
 import 'package:hrms_project/network/apiservices.dart';
 import 'package:hrms_project/network/models/profile_Model.dart';
+import 'package:hrms_project/provider/HolidayProvider.dart';
 import 'package:hrms_project/provider/UserProvider.dart';
-import 'package:hrms_project/screens/LoginScreen.dart';
 import 'package:hrms_project/screens/NavigatorScreen.dart';
 import 'package:hrms_project/screens/welcomePage.dart';
 import 'package:provider/provider.dart';
@@ -23,6 +22,7 @@ Future<void> main() async {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => UserProvider()),
+        ChangeNotifierProvider(create: (context) => HolidayProvider()),
       ],
       child: MyApp(),
     ),

@@ -92,7 +92,13 @@ class _NavigatorScreenState extends State<NavigatorScreen> {
         ),
         height: double.infinity,
         width: double.infinity,
-        child:  _pages[_selectedIndex],
+        child:  AnimatedSwitcher(
+          duration: Duration(milliseconds: 200),
+          transitionBuilder: (widget, animation) {
+            return FadeTransition(opacity: animation, child: widget);
+          },
+          child: _pages[_selectedIndex], // Animated Page Switch
+        ),
       )),
         bottomNavigationBar: BottomNavigationBar(
           items: const <BottomNavigationBarItem>[

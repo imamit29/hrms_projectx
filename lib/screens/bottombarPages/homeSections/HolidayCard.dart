@@ -1,6 +1,13 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:hrms_project/extras/globalFunctions.dart';
+import 'package:hrms_project/network/apiservices.dart';
+import 'package:hrms_project/network/models/holiday_Model.dart';
+import 'package:hrms_project/provider/HolidayProvider.dart';
+import 'package:hrms_project/screens/CalendarScreen.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class UpcomingHolidayCard extends StatefulWidget {
   const UpcomingHolidayCard({Key? key}) : super(key: key);
@@ -12,12 +19,8 @@ class UpcomingHolidayCard extends StatefulWidget {
 class _UpcomingHolidayCardState extends State<UpcomingHolidayCard> {
 
 
-  final List<Map<String, String>> holidays = const [
-    {"date": "2 Feb", "name": "Vasant Panchami", "day": "Sunday"},
-    {"date": "14 Feb", "name": "Shab-e-barat", "day": "Friday"},
-    {"date": "26 Feb", "name": "Maha Shivratri", "day": "Wednesday"},
-    {"date": "13 Mar", "name": "Holi", "day": "Thursday"},
-  ];
+  List<HolidaysList?> holidays = [];
+
 
   @override
   Widget build(BuildContext context) {
@@ -26,45 +29,70 @@ class _UpcomingHolidayCardState extends State<UpcomingHolidayCard> {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
       ),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Upcoming Holidays',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.grey),
-                ),
-                Icon(Icons.open_in_new, color: Colors.grey),
-              ],
-            ),
-            SizedBox(height: 20),
-            GridView.builder(
-              shrinkWrap: true,
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                crossAxisSpacing: 12,
-                mainAxisSpacing: 12,
-                childAspectRatio: 1.2,
+      child: GestureDetector(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Upcoming Holidays',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.grey),
+                  ),
+                  Icon(Icons.open_in_new, color: Colors.grey),
+                ],
               ),
-              itemCount: holidays.length,
-              itemBuilder: (context, index) {
-                return HolidayCard(holiday: holidays[index]);
-              },
-            ),
-          ],
+              SizedBox(height: 20),
+              GridView.builder(
+                shrinkWrap: true,
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 12,
+                  mainAxisSpacing: 12,
+                  childAspectRatio: 1.2,
+                ),
+                itemCount: holidays.length>4?4:holidays.length,
+                itemBuilder: (context, index) {
+                  return HolidayCard(holiday: holidays, index: index);
+                },
+              ),
+            ],
+          ),
         ),
+        onTap: (){
+          openPage(context, CalendarScreen());
+        },
       ),
     );
+  }
+
+  @override
+  void initState() {
+    _getHolidays();
+    super.initState();
+  }
+
+  HolidayModel? _holidayModel;
+
+  void _getHolidays() async {
+    var prefs = await SharedPreferences.getInstance();
+    _holidayModel = (await ApiService().holidayCalander(prefs.get('userid')));
+    setState(() {
+      Provider.of<HolidayProvider>(context, listen: false).setHolidayData(_holidayModel!);
+      holidays = _holidayModel!.result!.holidaysList!;
+
+    });
+
   }
 }
 
 class HolidayCard extends StatelessWidget {
-  final Map<String, String> holiday;
-  const HolidayCard({super.key, required this.holiday});
+  final List<HolidaysList?> holiday;
+  final index;
+  const HolidayCard({super.key, required this.holiday, required this.index});
 
   @override
   Widget build(BuildContext context) {
@@ -80,14 +108,15 @@ class HolidayCard extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  holiday['date']!,
+
+                Flexible(child: Text(
+                  holiday[index]!.name!,
                   style: const TextStyle(
-                    fontSize: 18,
+                    fontSize: 14,
                     fontWeight: FontWeight.bold,
-                    color: Colors.black54,
+                    color: Colors.deepPurple,
                   ),
-                ),
+                ),),
                 Container(
                   height: 40,
                   width: 40,
@@ -99,20 +128,14 @@ class HolidayCard extends StatelessWidget {
               ],
             ),
             Text(
-              holiday['name']!,
+              holiday[index]!.startDate!,
               style: const TextStyle(
-                fontSize: 14,
+                fontSize: 18,
                 fontWeight: FontWeight.bold,
-                color: Colors.deepPurple,
+                color: Colors.black54,
               ),
             ),
-            Text(
-              holiday['day']!,
-              style: const TextStyle(
-                fontSize: 14,
-                color: Colors.black87,
-              ),
-            ),
+
           ],
         ),
       ),

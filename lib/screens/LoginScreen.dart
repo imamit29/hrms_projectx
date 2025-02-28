@@ -5,7 +5,11 @@ import 'package:hrms_project/extras/Constants.dart';
 import 'package:hrms_project/extras/globalFunctions.dart';
 import 'package:hrms_project/network/apiservices.dart';
 import 'package:hrms_project/network/models/login_Model.dart';
+import 'package:hrms_project/network/models/profile_Model.dart';
+import 'package:hrms_project/provider/UserProvider.dart';
 import 'package:hrms_project/screens/NavigatorScreen.dart';
+import 'package:hrms_project/screens/welcomePage.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:unique_identifier/unique_identifier.dart';
 
@@ -283,9 +287,24 @@ class _LoginScreenState extends State<LoginScreen> {
       prefs.setBool('isloggedin', true);
       prefs.setInt("userid",_userModel!.result!.userId!.toInt());
       print(prefs.get('userid'));
-      openPageNoBack(context, NavigatorScreen());
+      _getProfile();
     }else{
       showError(_userModel?.result?.status, context);
     }
   }
+  ProfileModel? _profileModel;
+
+  void _getProfile() async {
+    var prefs = await SharedPreferences.getInstance();
+    _profileModel = (await ApiService().userProfile(prefs.get('userid')));
+    if(_profileModel?.result?.status == 'Sucessfull'){
+      Provider.of<UserProvider>(context, listen: false).setProfileData(_profileModel!);
+      openPageNoBack(context, NavigatorScreen());
+    }else{
+      openPageNoBack(context,WelcomeScreen());
+    }
+
+
+  }
+
 }

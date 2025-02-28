@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:hrms_project/extras/globalFunctions.dart';
 import 'package:hrms_project/network/apiservices.dart';
 import 'package:hrms_project/network/models/holiday_Model.dart';
+import 'package:hrms_project/provider/HolidayProvider.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:table_calendar/table_calendar.dart';
 
@@ -21,7 +23,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
     _calendarFormat = CalendarFormat.month;
     _selectedDay = DateTime.now();
     _focusedDay = DateTime.now();
-    _getHolidays();
+    getData();
     super.initState();
   }
 
@@ -141,14 +143,13 @@ class _CalendarScreenState extends State<CalendarScreen> {
     );
   }
 
-  HolidayModel? _userModel;
 
-  void _getHolidays() async {
-    var prefs = await SharedPreferences.getInstance();
-    _userModel = (await ApiService().holidayCalander(prefs.get('userid')));
+  getData(){
     setState(() {
 
-      List<HolidaysList>? holidays = _userModel?.result?.holidaysList;
+      HolidayModel? _holidayModel = Provider.of<HolidayProvider>(context, listen: false).holidayData;
+
+      List<HolidaysList>? holidays = _holidayModel?.result?.holidaysList;
 
       Map<DateTime, List<String>> parsedEvents = {};
 
@@ -168,7 +169,6 @@ class _CalendarScreenState extends State<CalendarScreen> {
       });
 
     });
-
   }
 
   DateTime _parseDate(String dateStr) {
