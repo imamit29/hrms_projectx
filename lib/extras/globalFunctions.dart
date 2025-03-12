@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 
 openPageNoBack(context, screenName) {
   Navigator.pushAndRemoveUntil<dynamic>(
@@ -51,4 +52,25 @@ showLoaderDialog(BuildContext context, msg) {
       return alert;
     },
   );
+
+}
+
+onAlert(context, title, msg, alertType) {
+  Alert(
+    context: context,
+    type: alertType,
+    title: title,
+    desc: msg,
+    buttons: [
+      DialogButton(
+        color: Theme.of(context).colorScheme.primary,
+        child: Text(
+          "Ok",
+          style: TextStyle(color: Colors.white, fontSize: 20),
+        ),
+        onPressed: () => Navigator.pop(context),
+        width: 120,
+      )
+    ],
+  ).show();
 }

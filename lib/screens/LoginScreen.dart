@@ -24,7 +24,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   bool _showPassword = false;
   bool _value = false;
-  var device_id ='asfgthyjtytfeawesrdgfh1234';
+  var device_id ='';
   TextEditingController _username = TextEditingController();
   TextEditingController _password = TextEditingController();
 

@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:hrms_project/extras/globalFunctions.dart';
 import 'package:hrms_project/network/apiservices.dart';
+import 'package:hrms_project/network/models/leaveSubmit_Model.dart';
 import 'package:hrms_project/network/models/leaveType_Model.dart';
+import 'package:intl/intl.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 
@@ -11,10 +14,13 @@ class LeaveRequestScreen extends StatefulWidget {
 }
 
 class _LeaveRequestScreenState extends State<LeaveRequestScreen> {
-  String leaveType = "";
+  int leaveType = 0;
   String selectedDay = "Full Day";
   List<String> leaveTypes = [];
-  TextEditingController commentsController = TextEditingController();
+  List<String> leaveTypesId = [];
+  TextEditingController _comment = TextEditingController();
+  TextEditingController _startDate= TextEditingController();
+  TextEditingController _endDate= TextEditingController();
 
   @override
   void initState() {
@@ -56,50 +62,50 @@ class _LeaveRequestScreenState extends State<LeaveRequestScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Expanded(
-                    child: TextFormField(
-                      initialValue: "07/02/2025",
-                      decoration: InputDecoration(labelText: "From*",
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Theme.of(context).colorScheme.primary, width: 1.0), // Inactive Border
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Theme.of(context).colorScheme.primary, width: 2.0), // Active Border
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          errorBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Theme.of(context).colorScheme.primary, width: 1.5), // Error Border
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          focusedErrorBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Theme.of(context).colorScheme.primary, width: 2.0), // Focused Error Border
-                            borderRadius: BorderRadius.circular(10),
-                          )),
-                      readOnly: true,
+                    child: InkWell(
+                      child: TextFormField(
+                        controller: _startDate,
+                        decoration: InputDecoration(labelText: "From*",
+                            border: OutlineInputBorder(
+                                borderRadius:
+                                BorderRadius.all(
+                                    Radius.circular(
+                                        10.0))),
+                            disabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Theme.of(context).colorScheme.primary, width: 1.0), // Inactive Border
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            ),
+                        enabled: false,
+                        autofocus: false,
+                      ),
+                      onTap: (){
+                        _startDatePicker(context, _startDate);
+                      },
                     ),
                   ),
                   SizedBox(width: 10),
                   Expanded(
-                    child: TextFormField(
-                      initialValue: "07/02/2025",
-                      decoration: InputDecoration(labelText: "To*",
-                          enabledBorder: OutlineInputBorder(
+                    child: InkWell(
+                      child: TextFormField(
+                        controller: _endDate,
+                        decoration: InputDecoration(labelText: "To*",
+                          border: OutlineInputBorder(
+                              borderRadius:
+                              BorderRadius.all(
+                                  Radius.circular(
+                                      10.0))),
+                          disabledBorder: OutlineInputBorder(
                             borderSide: BorderSide(color: Theme.of(context).colorScheme.primary, width: 1.0), // Inactive Border
                             borderRadius: BorderRadius.circular(10),
                           ),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Theme.of(context).colorScheme.primary, width: 2.0), // Active Border
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          errorBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Theme.of(context).colorScheme.primary, width: 1.5), // Error Border
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          focusedErrorBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Theme.of(context).colorScheme.primary, width: 2.0), // Focused Error Border
-                            borderRadius: BorderRadius.circular(10),
-                          )),
-                      readOnly: true,
+                        ),
+                        enabled: false,
+                        autofocus: false,
+                      ),
+                      onTap: (){
+                        _endDatePicker(context, _endDate);
+                      },
                     ),
                   ),
                 ],
@@ -171,14 +177,20 @@ class _LeaveRequestScreenState extends State<LeaveRequestScreen> {
                     .toList(),
                 onChanged: (newValue) {
                   setState(() {
-                    leaveType = newValue!;
+                    for (var value in _leaveTypeModel!.leaveTypes!) {
+                      if(value.leaveTypeName==newValue){
+                        leaveType = value.leaveTypeId!;
+                        break;
+                      }
+                    }
+                    print(leaveType);
                   });
                 },
               ),
               SizedBox(height: 10),
               SizedBox(height: 10),
               TextFormField(
-                controller: commentsController,
+                controller: _comment,
                 decoration: InputDecoration(
                     labelText: "Comments*",
                     enabledBorder: OutlineInputBorder(
@@ -203,7 +215,10 @@ class _LeaveRequestScreenState extends State<LeaveRequestScreen> {
               Container(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    _getLeaveSubmit();
+
+                  },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Theme.of(context).colorScheme.primary,
                   ),
@@ -223,9 +238,129 @@ class _LeaveRequestScreenState extends State<LeaveRequestScreen> {
     var prefs = await SharedPreferences.getInstance();
     _leaveTypeModel = (await ApiService().leaveType(prefs.get('userid')));
     setState(() {
-      leaveTypes = _leaveTypeModel!.leaveData!;
-
+      for (var value in _leaveTypeModel!.leaveTypes!) {
+        leaveTypes.add(value.leaveTypeName.toString());
+        leaveTypesId.add(value.leaveTypeId.toString());
+      }
     });
+  }
 
+  LeaveSubmitModel? _leaveSubmitModel;
+
+  void _getLeaveSubmit() async {
+    showLoaderDialog(context, 'Applying...');
+    DateFormat outputFormat = DateFormat("yyyy-MM-dd");
+    DateTime parsedStartDate = DateFormat("dd-MM-yyyy").parse(_startDate.text);
+    DateTime parsedEndDate = DateFormat("dd-MM-yyyy").parse(_endDate.text);
+    String formattedStartDate = outputFormat.format(parsedStartDate);
+    String formattedEndDate = outputFormat.format(parsedEndDate);
+
+    var prefs = await SharedPreferences.getInstance();
+    _leaveSubmitModel = (await ApiService().getleavesubmit(prefs.get('userid'), leaveType, formattedStartDate, formattedEndDate, _comment.text));
+    Navigator.pop(context);
+    setState(() {
+      if(_leaveSubmitModel?.result?.message == 'Leave request successfully created'){
+        onAlert(context, 'Leave Applied', _leaveSubmitModel?.result?.message, AlertType.success);
+        _startDate.text = '';
+        _endDate.text = '';
+        _comment.text = '';
+      }else{
+        onAlert(context, 'Failed', _leaveSubmitModel?.result?.message, AlertType.error);
+      }
+    });
+  }
+
+
+  DateTime selectedDate = DateTime.now();
+  DateTime selectedEndDate = DateTime.now();
+
+  Future<void> _startDatePicker(
+      BuildContext context,
+      TextEditingController textController,
+      ) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime(
+          DateTime.now().year, DateTime.now().month, DateTime.now().day),
+      firstDate: DateTime(
+          DateTime.now().year, DateTime.now().month, DateTime.now().day),
+      lastDate: DateTime(2050, 1),
+    );
+    if (picked != null && picked != selectedDate) {
+      setState(() {
+        selectedDate = picked;
+        _endDate.text = "";
+        final DateTime now = selectedDate;
+        final DateFormat formatter = DateFormat('dd-MM-yyyy');
+        final String formatted = formatter.format(now);
+        print(formatted);
+        String date = formatted;
+        textController.text = date;
+      });
+    }
+  }
+
+  Future<void> _endDatePicker(
+      BuildContext context,
+      TextEditingController textController,
+      ) async {
+    List<String> sDate = _startDate.text.toString().split("-");
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime(
+          int.parse(sDate[2]), int.parse(sDate[1]), int.parse(sDate[0])),
+      firstDate: DateTime(
+          int.parse(sDate[2]), int.parse(sDate[1]), int.parse(sDate[0])),
+      lastDate: DateTime(2050, 1),
+    );
+    if (picked != null && picked != selectedEndDate) {
+      setState(() {
+        selectedEndDate = picked;
+
+        final DateTime now = selectedEndDate;
+        final DateFormat formatter = DateFormat('dd-MM-yyyy');
+        final String formatted = formatter.format(now);
+        String date = formatted;
+        textController.text = date;
+      });
+    }
+  }
+
+  String dateConverter(String date) {
+    // Input date Format
+    final format = DateFormat("dd-MM-yyyy");
+    DateTime gettingDate = format.parse(date);
+    final DateFormat formatter = DateFormat('dd-MM-yyyy');
+    // Output Date Format
+    final String formatted = formatter.format(gettingDate);
+    return formatted;
+  }
+
+  int daysBetween(DateTime from, DateTime to) {
+    from = DateTime(from.year, from.month, from.day);
+    to = DateTime(to.year, to.month, to.day);
+    return (to.difference(from).inHours / 24).round();
+  }
+
+  List<String> split(String string, String separator, {int max = 0}) {
+    var result = <String>[];
+
+    if (separator.isEmpty) {
+      result.add(string);
+      return result;
+    }
+
+    while (true) {
+      var index = string.indexOf(separator, 0);
+      if (index == -1 || (max > 0 && result.length >= max)) {
+        result.add(string);
+        break;
+      }
+
+      result.add(string.substring(0, index));
+      string = string.substring(index + separator.length);
+    }
+
+    return result;
   }
 }

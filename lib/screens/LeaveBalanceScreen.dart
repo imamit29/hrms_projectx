@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:hrms_project/network/apiservices.dart';
+import 'package:hrms_project/network/models/leaveTypeBalModel.dart';
+import 'package:hrms_project/network/models/leaveType_Model.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LeaveBalanceScreen extends StatefulWidget {
   @override
@@ -26,6 +30,14 @@ class _LeaveBalanceScreenState extends State<LeaveBalanceScreen> {
 
   List<String> items = ['Casual Leave/Sick Leave', 'Compensatory Off (CO)', 'Privilege Leave (PL)'];
 
+  var isLoading = true;
+
+  @override
+  void initState() {
+    _getLeaveType();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,7 +49,7 @@ class _LeaveBalanceScreenState extends State<LeaveBalanceScreen> {
           onPressed: () {Navigator.pop(context);},
         ),
       ),
-      body: Container(
+      body: isLoading?Center(child: CircularProgressIndicator(),):Container(
         decoration: BoxDecoration(
           image: DecorationImage(
             image: const AssetImage("assets/background.png"),
@@ -96,5 +108,16 @@ class _LeaveBalanceScreenState extends State<LeaveBalanceScreen> {
         ),
       ),
     );
+  }
+
+  LeaveTypeBalModel? _leaveTypeBalModel;
+
+  void _getLeaveType() async {
+    var prefs = await SharedPreferences.getInstance();
+    _leaveTypeBalModel = (await ApiService().leaveTypeBal(prefs.get('userid')));
+    isLoading = false;
+    setState(() {
+      print(_leaveTypeBalModel);
+    });
   }
 }

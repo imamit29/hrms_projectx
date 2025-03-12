@@ -19,7 +19,7 @@ class ActionPage extends StatefulWidget {
 class _ActionPageState extends State<ActionPage> {
 
   final List<Map<String, dynamic>> actions = [
-    {'icon': Icons.mouse, 'title': 'Apply Regularization', 'color': Colors.blue[100]},
+    //{'icon': Icons.mouse, 'title': 'Apply Regularization', 'color': Colors.blue[100]},
     {'icon': Icons.info_outline, 'title': 'Attendance Info', 'color': Colors.blue[100]},
     {'icon': Icons.local_cafe, 'title': 'Apply Leave', 'color': Colors.cyan[100]},
     {'icon': Icons.currency_rupee, 'title': 'Add Expanse', 'color': Colors.cyan[100]},

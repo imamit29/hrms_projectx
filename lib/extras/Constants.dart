@@ -1,4 +1,4 @@
 class Constants {
   static String appName = 'Reliable ERP';
-  static String baseURL = 'http://13.232.144.134:8069/';
+  static String baseURL = 'http://13.233.115.19:8069/';
 }
