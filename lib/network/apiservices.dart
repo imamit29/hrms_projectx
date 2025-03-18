@@ -165,7 +165,7 @@ class ApiService {
       };
 
       final response = await http.post(
-        Uri.parse("${Constants.baseURL}GetLeaveTypesAndBalance"),
+        Uri.parse("${Constants.baseURL}GetLeaveTypesAndBalance/"),
         headers: {"Content-Type": "application/json"},
         body: jsonEncode(payload),
       );
