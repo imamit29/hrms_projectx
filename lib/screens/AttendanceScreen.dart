@@ -108,7 +108,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
               const SizedBox(height: 20),
               _buildLegendItem(Colors.green, "Total Present", presents),
               _buildLegendItem(Colors.red, "Total Absent", absents),
-              _buildLegendItem(Colors.yellow, "Total Leaves", leaves),
+              _buildLegendItem(Colors.orange, "Total Leaves", leaves),
               _buildLegendItem(Colors.grey, "WeekOffs", weekoffs),
               _buildLegendItem(Colors.blue, "Holidays", holidays),//
 

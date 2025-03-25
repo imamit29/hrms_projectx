@@ -239,8 +239,9 @@ class _LeaveRequestScreenState extends State<LeaveRequestScreen> {
     _leaveTypeModel = (await ApiService().leaveType(prefs.get('userid')));
     setState(() {
       for (var value in _leaveTypeModel!.leaveTypes!) {
-        leaveTypes.add(value.leaveTypeName.toString());
+        leaveTypes.add('${value.leaveTypeName.toString()}');
         leaveTypesId.add(value.leaveTypeId.toString());
+        // (${value.leaveTypeId.toString()})
       }
     });
   }

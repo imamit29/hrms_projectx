@@ -6,6 +6,7 @@ import 'package:hrms_project/extras/globalFunctions.dart';
 import 'package:hrms_project/network/apiservices.dart';
 import 'package:hrms_project/network/models/profile_Model.dart';
 import 'package:hrms_project/provider/HolidayProvider.dart';
+import 'package:hrms_project/provider/TeamAttendanceProvider.dart';
 import 'package:hrms_project/provider/UserProvider.dart';
 import 'package:hrms_project/screens/NavigatorScreen.dart';
 import 'package:hrms_project/screens/welcomePage.dart';
@@ -15,7 +16,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-    statusBarIconBrightness: Brightness.dark, // this will change the brightness of the icons
+    statusBarIconBrightness:
+        Brightness.dark, // this will change the brightness of the icons
     statusBarColor: Color.fromRGBO(5, 42, 61, 1), // or any color you want
   ));
   runApp(
@@ -23,15 +25,14 @@ Future<void> main() async {
       providers: [
         ChangeNotifierProvider(create: (context) => UserProvider()),
         ChangeNotifierProvider(create: (context) => HolidayProvider()),
+        ChangeNotifierProvider(create: (context) => TeamAttendanceProvider()),
       ],
       child: MyApp(),
     ),
   );
 }
 
-
 class MyApp extends StatelessWidget {
-
   const MyApp({Key? key}) : super(key: key);
 
   @override
@@ -58,27 +59,23 @@ class InitScreen extends StatefulWidget {
 }
 
 class _InitScreenState extends State<InitScreen> {
-
   var isLoggedIn = false;
 
   @override
   initState() {
     super.initState();
-   checkLoginStatus();
-
+    checkLoginStatus();
   }
 
   checkLoginStatus() async {
     final prefs = await SharedPreferences.getInstance();
-    isLoggedIn =  prefs.getBool('isloggedin') ?? false;
+    isLoggedIn = prefs.getBool('isloggedin') ?? false;
     print('isLoggedIn : $isLoggedIn');
-    if(isLoggedIn){
+    if (isLoggedIn) {
       _getLogin();
-    }else{
-      openPageNoBack(context,WelcomeScreen());
+    } else {
+      openPageNoBack(context, WelcomeScreen());
     }
-
-
   }
 
   @override
@@ -98,15 +95,13 @@ class _InitScreenState extends State<InitScreen> {
     var prefs = await SharedPreferences.getInstance();
     _userModel = (await ApiService().userProfile(prefs.get('userid')));
 
-    if(_userModel?.result?.status == 'Sucessfull'){
-      Provider.of<UserProvider>(context, listen: false).setProfileData(_userModel!);
+    print('status : ${_userModel?.result?.status}');
+    if (_userModel?.result?.status == "Sucessfull") {
+      Provider.of<UserProvider>(context, listen: false)
+          .setProfileData(_userModel!);
       openPageNoBack(context, NavigatorScreen());
-    }else{
-      openPageNoBack(context,WelcomeScreen());
+    } else {
+      openPageNoBack(context, WelcomeScreen());
     }
-
-
   }
 }
-
-

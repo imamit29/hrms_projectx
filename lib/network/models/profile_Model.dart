@@ -55,9 +55,13 @@ class Data {
   PersonalInformation? personalInformation;
   EmployementStatus? employementStatus;
   PositionDetails? positionDetails;
+  AttendanceInfo? attendanceInfo;
 
   Data(
-      {this.personalInformation, this.employementStatus, this.positionDetails});
+      {this.personalInformation,
+        this.employementStatus,
+        this.positionDetails,
+        this.attendanceInfo});
 
   Data.fromJson(Map<String, dynamic> json) {
     personalInformation = json['personal_information'] != null
@@ -68,6 +72,9 @@ class Data {
         : null;
     positionDetails = json['position_details'] != null
         ? new PositionDetails.fromJson(json['position_details'])
+        : null;
+    attendanceInfo = json['attendance_info'] != null
+        ? new AttendanceInfo.fromJson(json['attendance_info'])
         : null;
   }
 
@@ -82,6 +89,9 @@ class Data {
     if (this.positionDetails != null) {
       data['position_details'] = this.positionDetails!.toJson();
     }
+    if (this.attendanceInfo != null) {
+      data['attendance_info'] = this.attendanceInfo!.toJson();
+    }
     return data;
   }
 }
@@ -90,7 +100,7 @@ class PersonalInformation {
   int? employeeId;
   String? firstName;
   String? empCode;
-  bool? dob;
+  String? dob;
   String? gender;
   String? bloodGroup;
 
@@ -189,6 +199,25 @@ class PositionDetails {
     data['grade'] = this.grade;
     data['r_m'] = this.rM;
     data['f_m'] = this.fM;
+    return data;
+  }
+}
+
+class AttendanceInfo {
+  String? checkIn;
+  String? checkOut;
+
+  AttendanceInfo({this.checkIn, this.checkOut});
+
+  AttendanceInfo.fromJson(Map<String, dynamic> json) {
+    checkIn = json['check_in'];
+    checkOut = json['check_out'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['check_in'] = this.checkIn;
+    data['check_out'] = this.checkOut;
     return data;
   }
 }

@@ -3,9 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hrms_project/extras/Constants.dart';
 import 'package:hrms_project/extras/Services.dart';
+import 'package:hrms_project/extras/globalFunctions.dart';
+import 'package:hrms_project/network/apiservices.dart';
+import 'package:hrms_project/network/models/attendance_Model.dart';
+import 'package:hrms_project/network/models/logout_Model.dart';
 import 'package:hrms_project/screens/bottombarPages/ActionPage.dart';
 import 'package:hrms_project/screens/bottombarPages/HomePage.dart';
 import 'package:hrms_project/screens/bottombarPages/ProfilePage.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:unique_identifier/unique_identifier.dart';
 
 class NavigatorScreen extends StatefulWidget {
   const NavigatorScreen({Key? key}) : super(key: key);
@@ -28,6 +34,13 @@ class _NavigatorScreenState extends State<NavigatorScreen> {
     setState(() {
       _selectedIndex = index;
     });
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    initUniqueIdentifierState();
   }
 
 
@@ -69,7 +82,7 @@ class _NavigatorScreenState extends State<NavigatorScreen> {
               margin: EdgeInsets.all(20,),
               child: InkWell(
                 onTap: () {
-                  Services().logoutUser(context);
+                  _getLogOut();
                 },
                 child: Icon(
                   Icons.logout,
@@ -156,5 +169,37 @@ class _NavigatorScreenState extends State<NavigatorScreen> {
       ),
     )) ??
         false;
+  }
+
+  var device_id = '';
+  Future<void> initUniqueIdentifierState() async {
+    String identifier;
+    try {
+      identifier = (await UniqueIdentifier.serial)!;
+    } on PlatformException {
+      identifier = 'Failed to get Unique Identifier';
+    }
+
+    if (!mounted) return;
+
+    setState(() {
+      device_id = identifier;
+    });
+  }
+
+  LogoutModel? _userModel;
+
+  void _getLogOut() async {
+    showLoaderDialog(context, "Logging Out...");
+    var prefs = await SharedPreferences.getInstance();
+    _userModel = (await ApiService().logOut(prefs.get('userid'), device_id));
+    Navigator.pop(context);
+    setState(() {
+      if(_userModel?.result?.status=='Logout Successful'){
+        Services().logoutUser(context);
+      }else {
+        showError(_userModel?.result?.status, context);
+      }
+    });
   }
 }

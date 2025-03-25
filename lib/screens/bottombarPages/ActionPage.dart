@@ -23,7 +23,7 @@ class _ActionPageState extends State<ActionPage> {
     {'icon': Icons.info_outline, 'title': 'Attendance Info', 'color': Colors.blue[100]},
     {'icon': Icons.local_cafe, 'title': 'Apply Leave', 'color': Colors.cyan[100]},
     {'icon': Icons.currency_rupee, 'title': 'Add Expanse', 'color': Colors.cyan[100]},
-    {'icon': Icons.view_module, 'title': 'Leave Balance', 'color': Colors.cyan[100]},
+    //{'icon': Icons.view_module, 'title': 'Leave Balance', 'color': Colors.cyan[100]},
     {'icon': Icons.calendar_today, 'title': 'Holiday Calendar', 'color': Colors.cyan[100]},
     {'icon': Icons.receipt, 'title': 'Payslips', 'color': Colors.orange[100]},
   ];

@@ -2,11 +2,19 @@ import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:hrms_project/network/apiservices.dart';
+import 'package:hrms_project/network/models/attendance_Model.dart';
+import 'package:hrms_project/network/models/logout_Model.dart';
 import 'package:hrms_project/provider/UserProvider.dart';
 import 'package:hrms_project/screens/bottombarPages/homeSections/AttendanceCard.dart';
 import 'package:hrms_project/screens/bottombarPages/homeSections/HolidayCard.dart';
 import 'package:hrms_project/screens/bottombarPages/homeSections/PayslipCard.dart';
+import 'package:hrms_project/screens/bottombarPages/homeSections/TeamAttendanceCard.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:unique_identifier/unique_identifier.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -20,6 +28,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+    initUniqueIdentifierState();
   }
 
   @override
@@ -41,13 +50,25 @@ class _HomePageState extends State<HomePage> {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              '${apiResponse.result?.data?.personalInformation?.firstName} 👋',
-                              style: TextStyle(
-                                fontSize: 24,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  '${apiResponse.result?.data?.personalInformation?.firstName} 👋',
+                                  style: TextStyle(
+                                    fontSize: 24,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                Text(
+                                  '${apiResponse.result?.data?.positionDetails?.designation}',
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            )
                           ],
                         ),
                         CircleAvatar(
@@ -108,31 +129,50 @@ class _HomePageState extends State<HomePage> {
                                       crossAxisAlignment: CrossAxisAlignment.end,
                                       children: [
                                         Text(
-                                          'Thursday | GENERAL Shift',
+                                          '${getCurrentDayOfWeek()} | GENERAL Shift',
                                           style: TextStyle(
                                             fontSize: 16,
                                             fontWeight: FontWeight.w500,
                                           ),
                                         ),
-                                        Text(
-                                          '05 Feb 2025',
-                                          style: TextStyle(
-                                            fontSize: 14,
-                                            color: Colors.grey,
-                                          ),
-                                        ),
+                                       Column(
+                                         crossAxisAlignment: CrossAxisAlignment.start,
+                                         children: [
+                                           apiResponse.result!.data!.attendanceInfo!.checkIn=='N/A'?Container():Text(
+                                             'Check-In: ${apiResponse.result!.data!.attendanceInfo!.checkIn.toString()}',
+                                             style: TextStyle(
+                                               fontSize: 12,
+                                               color: Colors.grey,
+                                             ),
+                                           ),
+                                           apiResponse.result!.data!.attendanceInfo!.checkOut=='N/A'?Container():Text(
+                                             'Check-Out: ${apiResponse.result!.data!.attendanceInfo!.checkOut.toString()}',
+                                             style: TextStyle(
+                                               fontSize: 12,
+                                               color: Colors.grey,
+                                             ),
+                                           ),
+                                         ],
+                                       ),
 
                                         const SizedBox(height: 8),
-                                        ElevatedButton(
-                                          onPressed: () {},
+                                        apiResponse.result!.data!.attendanceInfo!.checkIn=='N/A'||apiResponse.result!.data!.attendanceInfo!.checkOut=='N/A'?ElevatedButton(
+                                          onPressed: () {
+                                            if(apiResponse.result!.data!.attendanceInfo!.checkIn=='N/A'){
+                                              _getCheckIn_Out(28.6379,77.378548,'checkin',getCurrentDateTime(),'');
+                                            }else{
+                                              _getCheckIn_Out(28.6379,77.378548,'checkout',apiResponse.result!.data!.attendanceInfo!.checkIn.toString(),getCurrentDateTime());
+                                            }
+
+                                          },
                                           style: ElevatedButton.styleFrom(
                                             backgroundColor: Colors.blue,
                                             shape: RoundedRectangleBorder(
                                               borderRadius: BorderRadius.circular(20),
                                             ),
                                           ),
-                                          child: Text('Sign Out', style: TextStyle(color: Colors.white),),
-                                        ),
+                                          child: Text(apiResponse.result!.data!.attendanceInfo!.checkIn=='N/A'?'Check In':'Check Out', style: TextStyle(color: Colors.white),),
+                                        ):Container(),
                                       ],
                                     )
                                   ],
@@ -146,60 +186,7 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
                   const SizedBox(height: 20),
-                  // Engage Section
-                  Card(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    elevation: 4,
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Engage',
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          const SizedBox(height: 16),
-                          Row(
-                            children: [
-                              Icon(
-                                Icons.equalizer,
-                                size: 48,
-                                color: Colors.orange,
-                              ),
-                              const SizedBox(width: 16),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      'Nothing to show!',
-                                      style: TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                                    Text(
-                                      'Create your first poll and gather your insights.',
-                                      style: TextStyle(
-                                        color: Colors.grey,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              )
-                            ],
-                          )
-                        ],
-                      ),
-                    ),
-                  ),
-                  //AttendanceCard(),
+                  TeamAttendanceCard(),
                   PayslipCard(),
                   UpcomingHolidayCard()
                 ],
@@ -211,5 +198,46 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+
+  var device_id = '';
+  Future<void> initUniqueIdentifierState() async {
+    String identifier;
+    try {
+      identifier = (await UniqueIdentifier.serial)!;
+    } on PlatformException {
+      identifier = 'Failed to get Unique Identifier';
+    }
+
+    if (!mounted) return;
+
+    setState(() {
+      device_id = identifier;
+    });
+  }
+
+  LogoutModel? _userModel;
+
+  void _getCheckIn_Out(lat,long,ctype,checkin,checkout) async {
+    var prefs = await SharedPreferences.getInstance();
+    _userModel = (await ApiService().checkIn_Out(prefs.get('userid'), lat,long,ctype,checkin,checkout));
+    setState(() {
+
+    });
+
+
+
+  }
+
+  String getCurrentDateTime() {
+    DateTime now = DateTime.now();
+    DateFormat formatter = DateFormat('dd-MM-yyyy HH:mm:ss');
+    return formatter.format(now);
+  }
+
+  String getCurrentDayOfWeek() {
+    DateTime now = DateTime.now();
+    DateFormat formatter = DateFormat('EEEE'); // 'EEEE' gives the full weekday name
+    return formatter.format(now);
+  }
 
 }

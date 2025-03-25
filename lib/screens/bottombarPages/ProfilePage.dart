@@ -60,7 +60,7 @@ class _ProfilePageState extends State<ProfilePage> {
               Divider(height: 5,),
               _buildInfoRow('Name', apiResponse.result!.data!.personalInformation!.firstName!),
               _buildInfoRow('Employee Code', apiResponse.result!.data!.personalInformation!.empCode!),
-              apiResponse.result!.data!.personalInformation!.dob!?_buildInfoRow('Date Of Birth', '12-10-1998'):Container(),
+              apiResponse.result!.data!.personalInformation!.dob==''?_buildInfoRow('Date Of Birth', '${apiResponse.result!.data!.personalInformation!.dob}'):Container(),
               _buildInfoRow('Gender', apiResponse.result!.data!.personalInformation!.gender!),
               _buildInfoRow('Blood Group', apiResponse.result!.data!.personalInformation!.bloodGroup!),
             ]),
@@ -105,7 +105,7 @@ Widget _buildInfoCard(String title, List<Widget> children) {
         children: [
           Text(
             title,
-            style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+            style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
           ),
           Divider(),
           ...children,
@@ -121,11 +121,11 @@ Widget _buildInfoRow(String label, String value, {bool isActive = false}) {
     child: Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(label, style: TextStyle(fontSize: 14, color: Colors.grey[700])),
+        Text(label, style: TextStyle(fontSize: 12, color: Colors.grey[700])),
         Text(
           value,
           style: TextStyle(
-            fontSize: 14,
+            fontSize: 12,
             fontWeight: FontWeight.w500,
             color: isActive ? Colors.green : Colors.black,
           ),

@@ -4,22 +4,24 @@ import 'package:flutter/material.dart';
 import 'package:hrms_project/extras/globalFunctions.dart';
 import 'package:hrms_project/network/apiservices.dart';
 import 'package:hrms_project/network/models/holiday_Model.dart';
+import 'package:hrms_project/network/models/teamattendance_Model.dart';
 import 'package:hrms_project/provider/HolidayProvider.dart';
+import 'package:hrms_project/provider/TeamAttendanceProvider.dart';
 import 'package:hrms_project/screens/CalendarScreen.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class UpcomingHolidayCard extends StatefulWidget {
-  const UpcomingHolidayCard({Key? key}) : super(key: key);
+class TeamAttendanceCard extends StatefulWidget {
+  const TeamAttendanceCard({Key? key}) : super(key: key);
 
   @override
-  _UpcomingHolidayCardState createState() => _UpcomingHolidayCardState();
+  _TeamAttendanceCardState createState() => _TeamAttendanceCardState();
 }
 
-class _UpcomingHolidayCardState extends State<UpcomingHolidayCard> {
+class _TeamAttendanceCardState extends State<TeamAttendanceCard> {
 
 
-  List<HolidaysList?> holidays = [];
+  List<TeamAttendance?> holidays = [];
 
 
   @override
@@ -39,8 +41,8 @@ class _UpcomingHolidayCardState extends State<UpcomingHolidayCard> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'Upcoming Holidays',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.grey),
+                    'Team Attendance',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black),
                   ),
                   Icon(Icons.open_in_new, color: Colors.grey),
                 ],
@@ -71,18 +73,20 @@ class _UpcomingHolidayCardState extends State<UpcomingHolidayCard> {
 
   @override
   void initState() {
-    _getHolidays();
+    _getTeamAttendance();
     super.initState();
   }
 
-  HolidayModel? _holidayModel;
+  TeamAttendanceModel? _teamAttendanceModel;
 
-  void _getHolidays() async {
+  void _getTeamAttendance() async {
     var prefs = await SharedPreferences.getInstance();
-    _holidayModel = (await ApiService().holidayCalander(prefs.get('userid')));
+    _teamAttendanceModel = (await ApiService().teamAttendance(prefs.get('userid')));
+    print('Error : ${_teamAttendanceModel!.jsonrpc}');
     setState(() {
-      Provider.of<HolidayProvider>(context, listen: false).setHolidayData(_holidayModel!);
-      holidays = _holidayModel!.result!.holidaysList!;
+      //Provider.of<TeamAttendanceProvider>(context, listen: false).setTeamAttendanceData(_teamAttendanceModel!);
+      print(_teamAttendanceModel!.result!.teamAttendance?[0].name);
+      holidays = _teamAttendanceModel!.result!.teamAttendance!;
 
     });
 
@@ -90,7 +94,7 @@ class _UpcomingHolidayCardState extends State<UpcomingHolidayCard> {
 }
 
 class HolidayCard extends StatelessWidget {
-  final List<HolidaysList?> holiday;
+  final List<TeamAttendance?> holiday;
   final index;
   const HolidayCard({super.key, required this.holiday, required this.index});
 
@@ -100,37 +104,37 @@ class HolidayCard extends StatelessWidget {
       color: Colors.purple[50],
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: Padding(
-        padding: const EdgeInsets.all(12.0),
+        padding: const EdgeInsets.all(10),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Expanded(child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
 
-                Flexible(child: Text(
-                  '${holiday[index]!.name!}',
-                  style: const TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.deepPurple,
-                  ),
-                ),),
                 Container(
                   height: 40,
                   width: 40,
-                  //top: -35,
                   child: Image.asset(
                     "assets/ic_flags.png",
                   ),
                 ),
+                Text(
+                  holiday[index]!.name!,
+                  maxLines: 1,
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.deepPurple,
+
+                  ),
+                ),
               ],
-            ),),
+            ),
             Text(
-              holiday[index]!.startDate!,
+              holiday[index]!.jobPosition!,
               style: const TextStyle(
-                fontSize: 18,
+                fontSize: 12,
                 fontWeight: FontWeight.bold,
                 color: Colors.black54,
               ),

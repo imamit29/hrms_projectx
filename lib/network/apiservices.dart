@@ -8,7 +8,9 @@ import 'package:hrms_project/network/models/leaveSubmit_Model.dart';
 import 'package:hrms_project/network/models/leaveTypeBalModel.dart';
 import 'package:hrms_project/network/models/leaveType_Model.dart';
 import 'package:hrms_project/network/models/login_Model.dart';
+import 'package:hrms_project/network/models/logout_Model.dart';
 import 'package:hrms_project/network/models/profile_Model.dart';
+import 'package:hrms_project/network/models/teamattendance_Model.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 
@@ -174,6 +176,83 @@ class ApiService {
       print(response.body);
       if (response.statusCode == 200) {
         LeaveTypeBalModel model = LeaveTypeBalModelFromJson(response.body);
+        return model;
+      }
+    } catch (e) {}
+    return null;
+  }
+
+  Future<LogoutModel?> logOut(userid, device_id) async {
+    try {
+
+      final Map<String, dynamic> payload = {
+        "user_id": userid,
+        "device_id": device_id
+      };
+
+      final response = await http.post(
+        Uri.parse("${Constants.baseURL}UserLogout"),
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode(payload),
+      );
+
+      print(response.request);
+      print(response.body);
+      if (response.statusCode == 200) {
+        LogoutModel model = LogoutModelFromJson(response.body);
+        return model;
+      }
+    } catch (e) {}
+    return null;
+  }
+
+  Future<LogoutModel?> checkIn_Out(userid, lat, long, ctype, checkin, checkout) async {
+    try {
+
+      final Map<String, dynamic> payload = {
+        "user_id": userid,
+        "type": "$ctype", // checkout or checkin
+        "checkin": "$checkin",
+        "checkout": "$checkout",
+        "lat": lat,
+        "long": long
+      };
+
+      print(payload);
+      final response = await http.post(
+        Uri.parse("${Constants.baseURL}Applyattendance"),
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode(payload),
+      );
+
+      print(response.request);
+      print(response.body);
+      if (response.statusCode == 200) {
+        LogoutModel model = LogoutModelFromJson(response.body);
+        return model;
+      }
+    } catch (e) {}
+    return null;
+  }
+
+  Future<TeamAttendanceModel?> teamAttendance(userid) async {
+    try {
+
+      final Map<String, dynamic> payload = {
+        "user_id": userid
+      };
+
+      final response = await http.post(
+        Uri.parse("${Constants.baseURL}TeamAttendance"),
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode(payload),
+      );
+
+      print(response.request);
+      print(response.body);
+      if (response.statusCode == 200) {
+        TeamAttendanceModel model = TeamAttendanceModelFromJson(response.body);
+        print("object : ${model.result?.statusCode}");
         return model;
       }
     } catch (e) {}
