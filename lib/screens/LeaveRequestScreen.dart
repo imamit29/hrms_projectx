@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hrms_project/extras/globalFunctions.dart';
 import 'package:hrms_project/network/apiservices.dart';
 import 'package:hrms_project/network/models/leaveSubmit_Model.dart';
+import 'package:hrms_project/network/models/leaveTypeBalModel.dart';
 import 'package:hrms_project/network/models/leaveType_Model.dart';
 import 'package:intl/intl.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
@@ -25,6 +26,7 @@ class _LeaveRequestScreenState extends State<LeaveRequestScreen> {
   @override
   void initState() {
     _getLeaveType();
+    _getLeaveBalanceType();
     super.initState();
   }
 
@@ -363,5 +365,15 @@ class _LeaveRequestScreenState extends State<LeaveRequestScreen> {
     }
 
     return result;
+  }
+
+  LeaveTypeBalModel? _leaveTypeBalModel;
+
+  void _getLeaveBalanceType() async {
+    var prefs = await SharedPreferences.getInstance();
+    _leaveTypeBalModel = (await ApiService().leaveTypeBal(prefs.get('userid')));
+    setState(() {
+      print(_leaveTypeBalModel);
+    });
   }
 }

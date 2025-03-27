@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:hrms_project/extras/globalFunctions.dart';
 import 'package:hrms_project/network/apiservices.dart';
 import 'package:hrms_project/network/models/logout_Model.dart';
 import 'package:hrms_project/network/models/profile_Model.dart';
@@ -217,8 +218,10 @@ class _HomePageState extends State<HomePage> {
   LogoutModel? _userModel;
 
   void _getCheckIn_Out(lat,long,ctype,checkin,checkout) async {
+    showLoaderDialog(context, 'Processing...');
     var prefs = await SharedPreferences.getInstance();
     _userModel = (await ApiService().checkIn_Out(prefs.get('userid'), lat,long,ctype,checkin,checkout));
+    Navigator.pop(context);
     _getProfile();
   }
 

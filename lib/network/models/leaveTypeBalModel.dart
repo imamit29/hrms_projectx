@@ -4,7 +4,7 @@ LeaveTypeBalModel LeaveTypeBalModelFromJson(String str) => LeaveTypeBalModel.fro
 
 class LeaveTypeBalModel {
   String? jsonrpc;
-  int? id;
+  Null? id;
   Result? result;
 
   LeaveTypeBalModel({this.jsonrpc, this.id, this.result});
@@ -91,5 +91,7 @@ class LeaveTypes {
     return data;
   }
 }
+
+
 
 
