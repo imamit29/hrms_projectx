@@ -252,10 +252,11 @@ class ApiService {
       print(response.body);
       if (response.statusCode == 200) {
         TeamAttendanceModel model = TeamAttendanceModelFromJson(response.body);
-        print("object : ${model.result?.statusCode}");
         return model;
       }
-    } catch (e) {}
+    } catch (e) {
+      print('object : ${e.toString()}');
+    }
     return null;
   }
 }

@@ -4,10 +4,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hrms_project/network/apiservices.dart';
-import 'package:hrms_project/network/models/attendance_Model.dart';
 import 'package:hrms_project/network/models/logout_Model.dart';
+import 'package:hrms_project/network/models/profile_Model.dart';
 import 'package:hrms_project/provider/UserProvider.dart';
-import 'package:hrms_project/screens/bottombarPages/homeSections/AttendanceCard.dart';
 import 'package:hrms_project/screens/bottombarPages/homeSections/HolidayCard.dart';
 import 'package:hrms_project/screens/bottombarPages/homeSections/PayslipCard.dart';
 import 'package:hrms_project/screens/bottombarPages/homeSections/TeamAttendanceCard.dart';
@@ -220,12 +219,19 @@ class _HomePageState extends State<HomePage> {
   void _getCheckIn_Out(lat,long,ctype,checkin,checkout) async {
     var prefs = await SharedPreferences.getInstance();
     _userModel = (await ApiService().checkIn_Out(prefs.get('userid'), lat,long,ctype,checkin,checkout));
-    setState(() {
+    _getProfile();
+  }
 
-    });
+  ProfileModel? _profileModel;
 
-
-
+  void _getProfile() async {
+    var prefs = await SharedPreferences.getInstance();
+    _profileModel = (await ApiService().userProfile(prefs.get('userid')));
+    if (_userModel?.result?.status == "Sucessfull") {
+      Provider.of<UserProvider>(context, listen: false)
+          .setProfileData(_profileModel!);
+    } else {
+    }
   }
 
   String getCurrentDateTime() {

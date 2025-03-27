@@ -8,88 +8,50 @@ import 'package:hrms_project/network/models/teamattendance_Model.dart';
 import 'package:hrms_project/provider/HolidayProvider.dart';
 import 'package:hrms_project/provider/TeamAttendanceProvider.dart';
 import 'package:hrms_project/screens/CalendarScreen.dart';
-import 'package:hrms_project/screens/TeamAttendanceScreen.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class TeamAttendanceCard extends StatefulWidget {
-  const TeamAttendanceCard({Key? key}) : super(key: key);
+class TeamAttendanceScreen extends StatefulWidget {
+  const TeamAttendanceScreen({Key? key}) : super(key: key);
 
   @override
-  _TeamAttendanceCardState createState() => _TeamAttendanceCardState();
+  _TeamAttendanceScreenState createState() => _TeamAttendanceScreenState();
 }
 
-class _TeamAttendanceCardState extends State<TeamAttendanceCard> {
-
-
-  List<TeamAttendance?> holidays = [];
+class _TeamAttendanceScreenState extends State<TeamAttendanceScreen> {
 
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 4,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: GestureDetector(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Team Attendance',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black),
-                  ),
-                  Icon(Icons.open_in_new, color: Colors.grey),
-                ],
-              ),
-              SizedBox(height: 20),
-              GridView.builder(
-                shrinkWrap: true,
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  crossAxisSpacing: 12,
-                  mainAxisSpacing: 12,
-                  childAspectRatio: 1.2,
-                ),
-                itemCount: holidays.length>4?4:holidays.length,
-                itemBuilder: (context, index) {
-                  return AttendanceCard(holiday: holidays, index: index);
-                },
-              ),
-            ],
-          ),
+    final apiResponse = Provider.of<TeamAttendanceProvider>(context).teamAttendanceData;
+
+    return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back,color: Colors.white,),
+          onPressed: () {Navigator.pop(context);},
         ),
-        onTap: (){
-          openPage(context, TeamAttendanceScreen());
-        },
+        backgroundColor: Theme.of(context).colorScheme.primary,
+        title: Text('Team Attendance', style: TextStyle(fontSize: 20,color: Colors.white),),),
+      body: Container(
+        margin: EdgeInsets.all(20),
+        child: GridView.builder(
+          shrinkWrap: true,
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            crossAxisSpacing: 12,
+            mainAxisSpacing: 12,
+            childAspectRatio: 1.2,
+          ),
+          itemCount: apiResponse.result?.teamAttendance.length,
+          itemBuilder: (context, index) {
+            return AttendanceCard(holiday: apiResponse.result!.teamAttendance, index: index);
+          },
+        ),
       ),
     );
   }
 
-  @override
-  void initState() {
-    _getTeamAttendance();
-    super.initState();
-  }
-
-  TeamAttendanceModel? _teamAttendanceModel;
-
-  void _getTeamAttendance() async {
-    var prefs = await SharedPreferences.getInstance();
-    _teamAttendanceModel = (await ApiService().teamAttendance(prefs.get('userid')));
-    setState(() {
-      Provider.of<TeamAttendanceProvider>(context, listen: false).setTeamAttendanceData(_teamAttendanceModel!);
-      holidays = _teamAttendanceModel!.result!.teamAttendance!;
-
-    });
-
-  }
 }
 
 class AttendanceCard extends StatelessWidget {

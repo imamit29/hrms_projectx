@@ -3,200 +3,148 @@ import 'dart:convert';
 TeamAttendanceModel TeamAttendanceModelFromJson(String str) => TeamAttendanceModel.fromJson(json.decode(str));
 
 class TeamAttendanceModel {
-  String? jsonrpc;
-  int? id;
-  Result? result;
+  TeamAttendanceModel({
+    required this.jsonrpc,
+    required this.id,
+    required this.result,
+  });
 
-  TeamAttendanceModel({this.jsonrpc, this.id, this.result});
+  final String? jsonrpc;
+  final dynamic id;
+  final Result? result;
 
-  TeamAttendanceModel.fromJson(Map<String, dynamic> json) {
-    jsonrpc = json['jsonrpc'];
-    id = json['id'];
-    result =
-    json['result'] != null ? new Result.fromJson(json['result']) : null;
+  factory TeamAttendanceModel.fromJson(Map<String, dynamic> json){
+    return TeamAttendanceModel(
+      jsonrpc: json["jsonrpc"],
+      id: json["id"],
+      result: json["result"] == null ? null : Result.fromJson(json["result"]),
+    );
   }
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['jsonrpc'] = this.jsonrpc;
-    data['id'] = this.id;
-    if (this.result != null) {
-      data['result'] = this.result!.toJson();
-    }
-    return data;
-  }
 }
 
 class Result {
-  int? statusCode;
-  int? userId;
-  UserAttendance? userAttendance;
-  List<TeamAttendance>? teamAttendance;
-  List<CurrentMonthHoliday>? currentMonthHoliday;
+  Result({
+    required this.statusCode,
+    required this.userId,
+    required this.userAttendance,
+    required this.teamAttendance,
+    required this.currentMonthHoliday,
+  });
 
-  Result(
-      {this.statusCode,
-        this.userId,
-        this.userAttendance,
-        this.teamAttendance,
-        this.currentMonthHoliday});
+  final int? statusCode;
+  final int? userId;
+  final UserAttendance? userAttendance;
+  final List<TeamAttendance> teamAttendance;
+  final List<CurrentMonthHoliday> currentMonthHoliday;
 
-  Result.fromJson(Map<String, dynamic> json) {
-    statusCode = json['status_code'];
-    userId = json['user_id'];
-    userAttendance = json['user_attendance'] != null
-        ? new UserAttendance.fromJson(json['user_attendance'])
-        : null;
-    if (json['team_attendance'] != null) {
-      teamAttendance = <TeamAttendance>[];
-      json['team_attendance'].forEach((v) {
-        teamAttendance!.add(new TeamAttendance.fromJson(v));
-      });
-    }
-    if (json['current_month_holiday'] != null) {
-      currentMonthHoliday = <CurrentMonthHoliday>[];
-      json['current_month_holiday'].forEach((v) {
-        currentMonthHoliday!.add(new CurrentMonthHoliday.fromJson(v));
-      });
-    }
+  factory Result.fromJson(Map<String, dynamic> json){
+    return Result(
+      statusCode: json["status_code"],
+      userId: json["user_id"],
+      userAttendance: json["user_attendance"] == null ? null : UserAttendance.fromJson(json["user_attendance"]),
+      teamAttendance: json["team_attendance"] == null ? [] : List<TeamAttendance>.from(json["team_attendance"]!.map((x) => TeamAttendance.fromJson(x))),
+      currentMonthHoliday: json["current_month_holiday"] == null ? [] : List<CurrentMonthHoliday>.from(json["current_month_holiday"]!.map((x) => CurrentMonthHoliday.fromJson(x))),
+    );
   }
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['status_code'] = this.statusCode;
-    data['user_id'] = this.userId;
-    if (this.userAttendance != null) {
-      data['user_attendance'] = this.userAttendance!.toJson();
-    }
-    if (this.teamAttendance != null) {
-      data['team_attendance'] =
-          this.teamAttendance!.map((v) => v.toJson()).toList();
-    }
-    if (this.currentMonthHoliday != null) {
-      data['current_month_holiday'] =
-          this.currentMonthHoliday!.map((v) => v.toJson()).toList();
-    }
-    return data;
-  }
-}
-
-class UserAttendance {
-  int? id;
-  String? name;
-  String? department;
-  String? jobPosition;
-  String? phone;
-  String? workEmail;
-  String? company;
-  String? image;
-  String? checkIn;
-  String? checkOut;
-
-  UserAttendance(
-      {this.id,
-        this.name,
-        this.department,
-        this.jobPosition,
-        this.phone,
-        this.workEmail,
-        this.company,
-        this.image,
-        this.checkIn,
-        this.checkOut});
-
-  UserAttendance.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    name = json['name'];
-    department = json['department'];
-    jobPosition = json['job_position'];
-    phone = json['phone'];
-    workEmail = json['work_email'];
-    company = json['company'];
-    image = json['image'];
-    checkIn = json['check_in'];
-    checkOut = json['check_out'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['name'] = this.name;
-    data['department'] = this.department;
-    data['job_position'] = this.jobPosition;
-    data['phone'] = this.phone;
-    data['work_email'] = this.workEmail;
-    data['company'] = this.company;
-    data['image'] = this.image;
-    data['check_in'] = this.checkIn;
-    data['check_out'] = this.checkOut;
-    return data;
-  }
-}
-
-class TeamAttendance {
-  int? id;
-  String? name;
-  String? department;
-  String? jobPosition;
-  String? phone;
-  String? workEmail;
-  String? checkIn;
-  String? checkOut;
-
-  TeamAttendance(
-      {this.id,
-        this.name,
-        this.department,
-        this.jobPosition,
-        this.phone,
-        this.workEmail,
-        this.checkIn,
-        this.checkOut});
-
-  TeamAttendance.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    name = json['name'];
-    department = json['department'];
-    jobPosition = json['job_position'];
-    phone = json['phone'];
-    workEmail = json['work_email'];
-    checkIn = json['check_in'];
-    checkOut = json['check_out'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['name'] = this.name;
-    data['department'] = this.department;
-    data['job_position'] = this.jobPosition;
-    data['phone'] = this.phone;
-    data['work_email'] = this.workEmail;
-    data['check_in'] = this.checkIn;
-    data['check_out'] = this.checkOut;
-    return data;
-  }
 }
 
 class CurrentMonthHoliday {
-  String? name;
-  String? startDate;
-  String? endDate;
+  CurrentMonthHoliday({
+    required this.name,
+    required this.startDate,
+    required this.endDate,
+  });
 
-  CurrentMonthHoliday({this.name, this.startDate, this.endDate});
+  final String? name;
+  final String? startDate;
+  final String? endDate;
 
-  CurrentMonthHoliday.fromJson(Map<String, dynamic> json) {
-    name = json['name'];
-    startDate = json['start_date'];
-    endDate = json['end_date'];
+  factory CurrentMonthHoliday.fromJson(Map<String, dynamic> json){
+    return CurrentMonthHoliday(
+      name: json["name"],
+      startDate: json["start_date"],
+      endDate: json["end_date"],
+    );
   }
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['name'] = this.name;
-    data['start_date'] = this.startDate;
-    data['end_date'] = this.endDate;
-    return data;
-  }
 }
 
+class TeamAttendance {
+  TeamAttendance({
+    required this.id,
+    required this.name,
+    required this.department,
+    required this.jobPosition,
+    required this.phone,
+    required this.workEmail,
+    required this.checkIn,
+    required this.checkOut,
+  });
+
+  final int? id;
+  final String? name;
+  final dynamic? department;
+  final dynamic? jobPosition;
+  final String? phone;
+  final String? workEmail;
+  final String? checkIn;
+  final String? checkOut;
+
+  factory TeamAttendance.fromJson(Map<String, dynamic> json){
+    return TeamAttendance(
+      id: json["id"],
+      name: json["name"],
+      department: json["department"],
+      jobPosition: json["job_position"],
+      phone: json["phone"],
+      workEmail: json["work_email"],
+      checkIn: json["check_in"],
+      checkOut: json["check_out"],
+    );
+  }
+
+}
+
+class UserAttendance {
+  UserAttendance({
+    required this.id,
+    required this.name,
+    required this.department,
+    required this.jobPosition,
+    required this.phone,
+    required this.workEmail,
+    required this.company,
+    required this.image,
+    required this.checkIn,
+    required this.checkOut,
+  });
+
+  final int? id;
+  final String? name;
+  final String? department;
+  final String? jobPosition;
+  final String? phone;
+  final String? workEmail;
+  final String? company;
+  final String? image;
+  final String? checkIn;
+  final String? checkOut;
+
+  factory UserAttendance.fromJson(Map<String, dynamic> json){
+    return UserAttendance(
+      id: json["id"],
+      name: json["name"],
+      department: json["department"],
+      jobPosition: json["job_position"],
+      phone: json["phone"],
+      workEmail: json["work_email"],
+      company: json["company"],
+      image: json["image"],
+      checkIn: json["check_in"],
+      checkOut: json["check_out"],
+    );
+  }
+
+}

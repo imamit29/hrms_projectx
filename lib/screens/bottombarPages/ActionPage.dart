@@ -8,6 +8,7 @@ import 'package:hrms_project/screens/ExpenseScreen.dart';
 import 'package:hrms_project/screens/LeaveBalanceScreen.dart';
 import 'package:hrms_project/screens/LeaveRequestScreen.dart';
 import 'package:hrms_project/screens/PaySlipScreen.dart';
+import 'package:hrms_project/screens/directoryScreen.dart';
 
 class ActionPage extends StatefulWidget {
   const ActionPage({Key? key}) : super(key: key);
@@ -21,6 +22,7 @@ class _ActionPageState extends State<ActionPage> {
   final List<Map<String, dynamic>> actions = [
     //{'icon': Icons.mouse, 'title': 'Apply Regularization', 'color': Colors.blue[100]},
     {'icon': Icons.info_outline, 'title': 'Attendance Info', 'color': Colors.blue[100]},
+    {'icon': Icons.contact_page, 'title': 'Team Directory', 'color': Colors.blue[100]},
     {'icon': Icons.local_cafe, 'title': 'Apply Leave', 'color': Colors.cyan[100]},
     {'icon': Icons.currency_rupee, 'title': 'Add Expanse', 'color': Colors.cyan[100]},
     //{'icon': Icons.view_module, 'title': 'Leave Balance', 'color': Colors.cyan[100]},
@@ -73,6 +75,8 @@ class _ActionPageState extends State<ActionPage> {
                           openPage(context, CalendarScreen());
                         }else if(actions[index]['title'] == 'Leave Balance'){
                           openPage(context, LeaveBalanceScreen());
+                        }else if(actions[index]['title'] == 'Team Directory'){
+                          openPage(context, DirectoryScreen());
                         }
                       },
                     ),
