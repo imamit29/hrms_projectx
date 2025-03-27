@@ -22,6 +22,7 @@ class _LeaveRequestScreenState extends State<LeaveRequestScreen> {
   TextEditingController _comment = TextEditingController();
   TextEditingController _startDate= TextEditingController();
   TextEditingController _endDate= TextEditingController();
+  double allocated = 0.0, taken =0.0, remaining = 0.0;
 
   @override
   void initState() {
@@ -185,10 +186,65 @@ class _LeaveRequestScreenState extends State<LeaveRequestScreen> {
                         break;
                       }
                     }
+                    for (var value in _leaveTypeBalModel!.result!.leaveTypes!) {
+                      if(value.leaveTypeName==newValue){
+                        allocated = value.allocatedLeaves!;
+                        taken = value.leavesTaken!;
+                        remaining = value.remainingLeaves!;
+                        break;
+                      }
+                    }
                     print(leaveType);
                   });
                 },
               ),
+              SizedBox(
+                height: 10,
+              ),
+              leaveType!=0?Container(
+                child: Card(
+                  child: Padding(padding: EdgeInsets.all(5),
+                  child: Column(
+                    children: [
+                      Row(
+                        children: [
+                          Expanded(child: Text('Allocated',textAlign: TextAlign.center,style: TextStyle(fontWeight: FontWeight.bold),),),
+                          Container(
+                            height: 20,
+                            width: 0.5,
+                            color: Colors.black,
+                          ),
+                          Expanded(child: Text('Taken',textAlign: TextAlign.center,style: TextStyle(fontWeight: FontWeight.bold)),),
+                          Container(
+                            height: 20,
+                            width: 0.5,
+                            color: Colors.black,
+                          ),
+                          Expanded(child: Text('Remaining',textAlign: TextAlign.center,style: TextStyle(fontWeight: FontWeight.bold))),
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Expanded(child: Text(allocated.toString(),textAlign: TextAlign.center)),
+                          Container(
+                            height: 20,
+                            width: 0.1,
+                            color: Colors.black,
+                          ),
+                          Expanded(child: Text(taken.toString(),textAlign: TextAlign.center)),
+                          Container(
+                            height: 20,
+                            width: 0.1,
+                            color: Colors.black,
+                          ),
+                          Expanded(child:  Text(remaining.toString(),textAlign: TextAlign.center)),
+                        ],
+                      )
+                    ],
+                  ),),
+                ),
+              ):Container(),
               SizedBox(height: 10),
               SizedBox(height: 10),
               TextFormField(
@@ -218,7 +274,11 @@ class _LeaveRequestScreenState extends State<LeaveRequestScreen> {
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: () {
-                    _getLeaveSubmit();
+                    if(remaining>0) {
+                      _getLeaveSubmit();
+                    }else{
+                      showError('You do not have remaining leave.', context);
+                    }
 
                   },
                   style: ElevatedButton.styleFrom(
@@ -373,7 +433,6 @@ class _LeaveRequestScreenState extends State<LeaveRequestScreen> {
     var prefs = await SharedPreferences.getInstance();
     _leaveTypeBalModel = (await ApiService().leaveTypeBal(prefs.get('userid')));
     setState(() {
-      print(_leaveTypeBalModel);
     });
   }
 }

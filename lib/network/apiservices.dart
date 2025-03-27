@@ -176,7 +176,6 @@ class ApiService {
       print(response.body);
       if (response.statusCode == 200) {
         LeaveTypeBalModel model = LeaveTypeBalModelFromJson(response.body);
-        print('object : $model');
         return model;
       }
     } catch (e) {

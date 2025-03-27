@@ -115,7 +115,7 @@ class _HomePageState extends State<HomePage> {
                                       mainAxisAlignment: MainAxisAlignment.center,
                                       children: [
                                         Text(
-                                          '7:03 PM',
+                                          DateFormat('hh:mm a').format(DateTime.now()),
                                           style: TextStyle(
                                             fontSize: 20,
                                             fontWeight: FontWeight.bold,
@@ -230,9 +230,11 @@ class _HomePageState extends State<HomePage> {
   void _getProfile() async {
     var prefs = await SharedPreferences.getInstance();
     _profileModel = (await ApiService().userProfile(prefs.get('userid')));
-    if (_userModel?.result?.status == "Sucessfull") {
-      Provider.of<UserProvider>(context, listen: false)
-          .setProfileData(_profileModel!);
+    if (_profileModel?.result?.status == "Sucessfull") {
+      setState(() {
+        Provider.of<UserProvider>(context, listen: false)
+            .setProfileData(_profileModel!);
+      });
     } else {
     }
   }

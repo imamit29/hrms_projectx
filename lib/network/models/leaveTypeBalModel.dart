@@ -62,9 +62,9 @@ class Result {
 class LeaveTypes {
   int? leaveTypeId;
   String? leaveTypeName;
-  int? allocatedLeaves;
-  int? leavesTaken;
-  int? remainingLeaves;
+  double? allocatedLeaves;
+  double? leavesTaken;
+  double? remainingLeaves;
 
   LeaveTypes(
       {this.leaveTypeId,
