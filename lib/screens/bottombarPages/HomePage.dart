@@ -36,6 +36,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    _getCurrentLocation('ctype', 'checkin', 'checkout');
     final apiResponse = Provider.of<UserProvider>(context).profileData;
     return RefreshIndicator(
         onRefresh: _refresh,
