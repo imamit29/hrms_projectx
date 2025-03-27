@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:hrms_project/extras/globalFunctions.dart';
 import 'package:hrms_project/network/apiservices.dart';
 import 'package:hrms_project/network/models/logout_Model.dart';
@@ -25,6 +26,8 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
 
+  double lat = 0.0, long = 0.0;
+
   @override
   void initState() {
     super.initState();
@@ -34,7 +37,9 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     final apiResponse = Provider.of<UserProvider>(context).profileData;
-    return SingleChildScrollView(
+    return RefreshIndicator(
+        onRefresh: _refresh,
+        child: SingleChildScrollView(
       child: Column(
         children: [
           Container(
@@ -135,33 +140,33 @@ class _HomePageState extends State<HomePage> {
                                             fontWeight: FontWeight.w500,
                                           ),
                                         ),
-                                       Column(
-                                         crossAxisAlignment: CrossAxisAlignment.start,
-                                         children: [
-                                           apiResponse.result!.data!.attendanceInfo!.checkIn=='N/A'?Container():Text(
-                                             'Check-In: ${apiResponse.result!.data!.attendanceInfo!.checkIn.toString()}',
-                                             style: TextStyle(
-                                               fontSize: 12,
-                                               color: Colors.grey,
-                                             ),
-                                           ),
-                                           apiResponse.result!.data!.attendanceInfo!.checkOut=='N/A'?Container():Text(
-                                             'Check-Out: ${apiResponse.result!.data!.attendanceInfo!.checkOut.toString()}',
-                                             style: TextStyle(
-                                               fontSize: 12,
-                                               color: Colors.grey,
-                                             ),
-                                           ),
-                                         ],
-                                       ),
+                                        Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            apiResponse.result!.data!.attendanceInfo!.checkIn=='N/A'?Container():Text(
+                                              'Check-In: ${apiResponse.result!.data!.attendanceInfo!.checkIn.toString()}',
+                                              style: TextStyle(
+                                                fontSize: 12,
+                                                color: Colors.grey,
+                                              ),
+                                            ),
+                                            apiResponse.result!.data!.attendanceInfo!.checkOut=='N/A'?Container():Text(
+                                              'Check-Out: ${apiResponse.result!.data!.attendanceInfo!.checkOut.toString()}',
+                                              style: TextStyle(
+                                                fontSize: 12,
+                                                color: Colors.grey,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
 
                                         const SizedBox(height: 8),
                                         apiResponse.result!.data!.attendanceInfo!.checkIn=='N/A'||apiResponse.result!.data!.attendanceInfo!.checkOut=='N/A'?ElevatedButton(
                                           onPressed: () {
                                             if(apiResponse.result!.data!.attendanceInfo!.checkIn=='N/A'){
-                                              _getCheckIn_Out(28.6379,77.378548,'checkin',getCurrentDateTime(),'');
+                                              _getCurrentLocation('checkin',getCurrentDateTime(),'');
                                             }else{
-                                              _getCheckIn_Out(28.6379,77.378548,'checkout',apiResponse.result!.data!.attendanceInfo!.checkIn.toString(),getCurrentDateTime());
+                                              _getCurrentLocation('checkout',apiResponse.result!.data!.attendanceInfo!.checkIn.toString(),getCurrentDateTime());
                                             }
 
                                           },
@@ -194,8 +199,13 @@ class _HomePageState extends State<HomePage> {
             ),
           )
         ],
-      ),
-    );
+      )
+    ));
+  }
+
+  Future<void> _refresh() async {
+    await Future.delayed(Duration(seconds: 2)); // Simulate network delay
+    setState(() {});
   }
 
 
@@ -249,6 +259,45 @@ class _HomePageState extends State<HomePage> {
     DateTime now = DateTime.now();
     DateFormat formatter = DateFormat('EEEE'); // 'EEEE' gives the full weekday name
     return formatter.format(now);
+  }
+
+  Future<void> _getCurrentLocation(ctype,checkin,checkout) async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    // Check if location services are enabled
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+     showError("Location services are disabled.", context);
+      return;
+    }
+
+    // Check and request permission
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        showError("Location permissions are denied.", context);
+        return;
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      setState(() {
+        showError("Location permissions are permanently denied, we cannot request permissions.", context);
+      });
+      return;
+    }
+
+    // Get current location
+    Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
+
+    lat = position.latitude;
+    long = position.longitude;
+    print("Latitude: ${position.latitude}, Longitude: ${position.longitude}");
+    _getCheckIn_Out(lat,long,ctype,checkin,checkout);
+
   }
 
 }
